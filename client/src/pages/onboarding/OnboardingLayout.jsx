@@ -136,7 +136,7 @@ export default function OnboardingLayout() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col items-center w-full">
-        <div className="w-full max-w-[640px] px-4 pt-16 pb-24 flex flex-col h-full overflow-hidden">
+        <div className="w-full max-w-[640px] px-4 pt-16 pb-24 flex flex-col">
           {/* Progress indicators */}
           <div className="flex items-center justify-between relative mb-16">
             <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-[#E5E7EB] z-0 overflow-hidden">
@@ -172,7 +172,7 @@ export default function OnboardingLayout() {
 
           {/* Step content */}
           <div
-            className={`w-full flex-1 ${
+            className={`w-full ${
               isExiting
                 ? direction === 'forward' ? 'step-exit-forward' : 'step-exit-backward'
                 : direction === 'forward' ? 'step-enter-forward' : 'step-enter-backward'

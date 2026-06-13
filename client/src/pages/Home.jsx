@@ -70,6 +70,23 @@ export default function Home() {
     return () => timers.forEach(clearTimeout);
   }, []);
 
+  /* ---- Hide global navbar & footer on the landing page ---- */
+  useEffect(() => {
+    const globalHeader = document.querySelector('header');
+    const mainEl = document.querySelector('main');
+    const globalFooter = mainEl?.parentElement?.querySelector(':scope > footer');
+
+    if (globalHeader) globalHeader.style.display = 'none';
+    if (mainEl) mainEl.style.paddingTop = '0';
+    if (globalFooter) globalFooter.style.display = 'none';
+
+    return () => {
+      if (globalHeader) globalHeader.style.display = '';
+      if (mainEl) mainEl.style.paddingTop = '';
+      if (globalFooter) globalFooter.style.display = '';
+    };
+  }, []);
+
   /* ---- Steps data ---- */
   const steps = [
     {
@@ -91,6 +108,77 @@ export default function Home() {
 
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: '#0A0A0A' }}>
+
+      {/* ==================== CUSTOM LANDING NAVBAR ==================== */}
+      <nav
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          background: 'rgba(255,255,255,0.92)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid #E5E7EB',
+          height: '64px',
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 clamp(1.5rem, 5vw, 6rem)',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '1280px',
+            width: '100%',
+            margin: '0 auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          {/* Logo */}
+          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+            <span style={{ fontSize: '20px', fontWeight: 800, color: '#0A0A0A' }}>Campus</span>
+            <span style={{ fontSize: '20px', fontWeight: 800, color: '#F59E0B' }}>Connect</span>
+          </Link>
+
+          {/* Browse link (center) */}
+          <Link
+            to="/services"
+            style={{
+              textDecoration: 'none',
+              fontSize: '14px',
+              fontWeight: 600,
+              color: '#0A0A0A',
+              transition: 'color 0.2s ease',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = '#F59E0B'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = '#0A0A0A'; }}
+          >
+            Browse
+          </Link>
+
+          {/* Log In text link (right) */}
+          <Link
+            to="/login"
+            style={{
+              textDecoration: 'none',
+              fontSize: '14px',
+              fontWeight: 600,
+              color: '#0A0A0A',
+              transition: 'color 0.2s ease',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = '#F59E0B'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = '#0A0A0A'; }}
+          >
+            Log In
+          </Link>
+        </div>
+      </nav>
+
+      {/* Spacer for fixed navbar */}
+      <div style={{ height: '64px' }} />
 
       {/* ==================== INLINE KEYFRAMES ==================== */}
       <style>{`
@@ -199,7 +287,7 @@ export default function Home() {
               transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
             }}
           >
-            <Link to="/services" style={{ textDecoration: 'none' }}>
+            <Link to="/register" style={{ textDecoration: 'none' }}>
               <button
                 style={{
                   background: '#F59E0B',
@@ -228,7 +316,7 @@ export default function Home() {
               </button>
             </Link>
 
-            <Link to={user ? '/services/create' : '/register'} style={{ textDecoration: 'none' }}>
+            <Link to="/register" style={{ textDecoration: 'none' }}>
               <button
                 style={{
                   background: 'transparent',
@@ -676,9 +764,7 @@ export default function Home() {
             <nav style={{ display: 'flex', gap: 'clamp(16px, 3vw, 32px)', flexWrap: 'wrap' }}>
               {[
                 { label: 'Browse', to: '/services' },
-                { label: 'Dashboard', to: '/dashboard' },
                 { label: 'Login', to: '/login' },
-                { label: 'Sign Up', to: '/register' },
               ].map(link => (
                 <Link
                   key={link.label}

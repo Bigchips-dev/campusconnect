@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import api from '../../lib/api';
-import Button from '../../components/ui/Button';
 import { CATEGORIES } from '../../data/categories';
 import { getCategoryIcon } from '../../lib/categoryIcons';
-import { isVirtualEligible } from '../../config/virtualCategories';
 import { ArrowRight, ArrowLeft, Check } from 'lucide-react';
 
 export default function StepInterests({ progress, onNext, onBack }) {
   const [selected, setSelected] = useState(progress?.interests || []);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [animatingId, setAnimatingId] = useState(null);
 
   const toggle = (id) => {
+    setAnimatingId(id);
+    setTimeout(() => setAnimatingId(null), 150);
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
@@ -35,30 +36,34 @@ export default function StepInterests({ progress, onNext, onBack }) {
   };
 
   return (
-    <div className="space-y-8 w-full">
+    <div className="flex flex-col gap-10 w-full">
       {/* Header */}
-      <div>
-        <h2 className="text-3xl font-bold text-[#0A0A0A] mb-2">What are you looking for?</h2>
-        <p className="text-[#6B7280]">Select all the services you might need.</p>
+      <div className="animate-step-heading">
+        <h2 className="text-[2.5rem] md:text-[3rem] font-[800] leading-[1.1] text-[#0A0A0A] mb-2 tracking-tight">What are you looking for?</h2>
+        <p className="text-base font-normal text-[#6B7280] animate-step-subheading">Select all the services you might need.</p>
         {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
       </div>
 
       {/* Category cards grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {CATEGORIES.map((cat) => {
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+        {CATEGORIES.map((cat, index) => {
           const isActive = selected.includes(cat.id);
           const Icon = getCategoryIcon(cat.icon);
+          const rowDelay = 200 + Math.floor(index / 3) * 80;
 
           return (
             <button
               key={cat.id}
               type="button"
               onClick={() => toggle(cat.id)}
-              className={`relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 text-center transition-all duration-200 cursor-pointer ${
+              className={`relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 text-center transition-all duration-150 cursor-pointer animate-step-field hover:-translate-y-1 hover:shadow-md ${
+                animatingId === cat.id ? 'pulse-snap' : ''
+              } ${
                 isActive
                   ? 'bg-[#0A0A0A] border-[#F59E0B]'
                   : 'bg-white border-[#E5E7EB] hover:border-[#0A0A0A]'
               }`}
+              style={{ animationDelay: `${rowDelay}ms` }}
             >
               {/* Check badge */}
               {isActive && (
@@ -80,21 +85,21 @@ export default function StepInterests({ progress, onNext, onBack }) {
         })}
       </div>
 
-      <p className="text-sm text-center text-[#6B7280]">
+      <p className="text-sm text-center text-[#6B7280] animate-step-field" style={{ animationDelay: '500ms' }}>
         {selected.length} selected · minimum 1 required
       </p>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between pt-4">
+      <div className="flex items-center justify-between pt-6 animate-step-btn">
         {onBack ? (
-          <button onClick={onBack} className="flex items-center gap-2 text-[#6B7280] hover:text-[#0A0A0A] font-medium transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back
+          <button onClick={onBack} className="group flex items-center gap-2 text-[#6B7280] hover:text-[#0A0A0A] font-medium transition-colors duration-200">
+            <ArrowLeft className="w-4 h-4 transition-transform duration-150 group-hover:-translate-x-[3px]" /> Back
           </button>
         ) : <div />}
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="w-1/2 flex items-center justify-center gap-2 py-4 bg-[#0A0A0A] text-white rounded-xl font-bold transition-colors hover:bg-[#F59E0B] hover:text-[#0A0A0A] disabled:opacity-50"
+          className="w-1/2 flex items-center justify-center gap-2 py-4 bg-[#0A0A0A] text-white rounded-xl font-bold transition-all duration-200 hover:bg-[#F59E0B] hover:text-[#0A0A0A] active:scale-[0.98] disabled:opacity-50"
         >
           {loading ? 'Saving...' : 'Continue'}
           {!loading && <ArrowRight className="w-5 h-5" />}

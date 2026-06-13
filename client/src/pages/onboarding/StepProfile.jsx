@@ -41,11 +41,11 @@ export default function StepProfile({ progress, onNext, user }) {
   };
 
   return (
-    <div className="space-y-8 w-full">
+    <div className="flex flex-col gap-10 w-full">
       {/* Header */}
-      <div>
-        <h2 className="text-3xl font-bold text-[#0A0A0A] mb-2">Tell us about you.</h2>
-        <p className="text-[#6B7280]">Help others know who they are connecting with.</p>
+      <div className="animate-step-heading">
+        <h2 className="text-[2.5rem] md:text-[3rem] font-[800] leading-[1.1] text-[#0A0A0A] mb-2 tracking-tight">Tell us about you.</h2>
+        <p className="text-base text-[#6B7280] animate-step-subheading">Help others know who they are connecting with.</p>
       </div>
 
       {errors.submit && (
@@ -55,7 +55,7 @@ export default function StepProfile({ progress, onNext, user }) {
       )}
 
       {/* Profile photo */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 animate-step-field" style={{ animationDelay: '200ms' }}>
         <div className="flex items-center gap-4">
           {form.avatarUrl ? (
             <img src={form.avatarUrl} alt="Avatar" className="w-24 h-24 rounded-full object-cover border border-[#E5E7EB]" />
@@ -67,20 +67,20 @@ export default function StepProfile({ progress, onNext, user }) {
           )}
         </div>
         <div className="w-full">
-          <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Profile Photo URL (optional)</label>
+          <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Profile Photo URL (optional)</label>
           <input
             type="text"
             placeholder="https://example.com/photo.jpg"
             value={form.avatarUrl}
             onChange={(e) => setForm({ ...form, avatarUrl: e.target.value })}
-            className="w-full px-4 py-3 bg-white border border-[#E5E7EB] rounded-lg text-sm transition-all focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]"
+            className="w-full px-4 py-3 bg-white border border-[#E5E7EB] rounded-lg text-sm transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]"
           />
         </div>
       </div>
 
       {/* Phone */}
-      <div>
-        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Phone Number</label>
+      <div className="animate-step-field" style={{ animationDelay: '250ms' }}>
+        <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Phone Number</label>
         <div className="relative">
           <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
           <input
@@ -88,22 +88,22 @@ export default function StepProfile({ progress, onNext, user }) {
             placeholder="+234 800 000 0000"
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className={`w-full pl-10 pr-4 py-3 bg-white border ${errors.phone ? 'border-red-500' : 'border-[#E5E7EB]'} rounded-lg text-sm transition-all focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]`}
+            className={`w-full pl-10 pr-4 py-3 bg-white border ${errors.phone ? 'border-red-500' : 'border-[#E5E7EB]'} rounded-lg text-sm transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]`}
           />
         </div>
         {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
       </div>
 
       {/* Gender */}
-      <div>
-        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Gender</label>
+      <div className="animate-step-field" style={{ animationDelay: '300ms' }}>
+        <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Gender</label>
         <div className="flex gap-3">
           {GENDERS.map((g) => (
             <button
               key={g.value}
               type="button"
               onClick={() => setForm({ ...form, gender: g.value })}
-              className={`flex-1 py-3 rounded-full text-sm font-medium border transition-all ${
+              className={`flex-1 py-3 rounded-full text-sm font-medium border transition-all duration-150 ${
                 form.gender === g.value
                   ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
                   : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#0A0A0A]'
@@ -116,8 +116,8 @@ export default function StepProfile({ progress, onNext, user }) {
       </div>
 
       {/* Faculty */}
-      <div>
-        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Faculty</label>
+      <div className="animate-step-field" style={{ animationDelay: '350ms' }}>
+        <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Faculty</label>
         <SearchableSelect
           options={FACULTIES}
           value={form.faculty}
@@ -125,21 +125,18 @@ export default function StepProfile({ progress, onNext, user }) {
           placeholder="Search your faculty…"
           error={errors.faculty}
         />
-        {/* Note: I'm leaving SearchableSelect intact but we will redesign its internals if needed, 
-            though the prompt says "If changes need to be made in shared components... make them".
-            We'll update SearchableSelect next. */}
       </div>
 
       {/* Level */}
-      <div>
-        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Level</label>
+      <div className="animate-step-field" style={{ animationDelay: '400ms' }}>
+        <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Level</label>
         <div className="flex flex-wrap gap-3">
           {LEVELS.map((lvl) => (
             <button
               key={lvl}
               type="button"
               onClick={() => setForm({ ...form, level: lvl })}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all ${
+              className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all duration-150 ${
                 form.level === lvl
                   ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
                   : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#0A0A0A]'
@@ -152,25 +149,25 @@ export default function StepProfile({ progress, onNext, user }) {
       </div>
 
       {/* Bio */}
-      <div>
-        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Short Bio (optional)</label>
+      <div className="animate-step-field" style={{ animationDelay: '450ms' }}>
+        <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Short Bio (optional)</label>
         <textarea
           rows={3}
           placeholder="Tell others a bit about yourself…"
           value={form.bio}
           onChange={(e) => setForm({ ...form, bio: e.target.value })}
           maxLength={300}
-          className="w-full px-4 py-3 bg-white border border-[#E5E7EB] rounded-lg text-sm transition-all focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B] resize-none"
+          className="w-full px-4 py-3 bg-white border border-[#E5E7EB] rounded-lg text-sm transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B] resize-none"
         />
         <p className="text-xs text-[#6B7280] text-right mt-1">{form.bio.length}/300</p>
       </div>
 
       {/* Next button */}
-      <div className="pt-4">
+      <div className="pt-6 animate-step-btn">
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-2 py-4 bg-[#0A0A0A] text-white rounded-xl font-bold transition-colors hover:bg-[#F59E0B] hover:text-[#0A0A0A] disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 py-4 bg-[#0A0A0A] text-white rounded-xl font-bold transition-all duration-200 hover:bg-[#F59E0B] hover:text-[#0A0A0A] active:scale-[0.98] disabled:opacity-50"
         >
           {loading ? 'Saving...' : 'Continue'}
           {!loading && <ArrowRight className="w-5 h-5" />}

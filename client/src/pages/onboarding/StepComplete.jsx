@@ -4,7 +4,7 @@ import api from '../../lib/api';
 import Button from '../../components/ui/Button';
 import { useAuth } from '../../hooks/useAuth';
 import { CATEGORIES } from '../../data/categories';
-import { PartyPopper, Search, LayoutDashboard, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { PartyPopper, Search, LayoutDashboard, ArrowRight, CheckCircle2, Sparkles, Check } from 'lucide-react';
 
 export default function StepComplete({ user, refreshUser }) {
   const navigate = useNavigate();
@@ -26,64 +26,58 @@ export default function StepComplete({ user, refreshUser }) {
     }
   };
 
+  const checklist = [
+    { text: 'Profile information completed', icon: CheckCircle2 },
+    ...(isSeeker ? [{ text: 'Service interests selected', icon: CheckCircle2 }] : []),
+    ...(isProvider ? [{ text: 'Service skills configured', icon: CheckCircle2 }] : [])
+  ];
+
   return (
-    <div className="flex flex-col items-center text-center py-12 space-y-8 animate-fade-in w-full max-w-sm mx-auto">
-      {/* Celebration icon */}
-      <div className="w-24 h-24 rounded-full flex items-center justify-center bg-[#F59E0B]/10 border-4 border-[#F59E0B]">
-        <CheckCircle2 className="w-12 h-12 text-[#F59E0B]" />
+    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8 w-full max-w-md mx-auto">
+      {/* Icon */}
+      <div className="w-24 h-24 rounded-full bg-[#F59E0B] flex items-center justify-center big-bounce-scale mb-4">
+        <Check className="w-12 h-12 text-white" strokeWidth={3} />
       </div>
 
-      {/* Headline */}
-      <div>
-        <h1 className="text-3xl font-bold text-[#0A0A0A] mb-2">
+      {/* Header */}
+      <div className="text-center">
+        <h2 className="text-[2.5rem] md:text-[3rem] font-[800] leading-[1.1] text-[#0A0A0A] mb-3 tracking-tight animate-step-heading" style={{ animationDelay: '400ms' }}>
           You're all set, {user?.firstName}!
-        </h1>
-        <p className="text-[#6B7280]">
-          Your CampusConnect profile is ready to go.
+        </h2>
+        <p className="text-base font-normal text-[#6B7280] animate-step-subheading" style={{ animationDelay: '500ms' }}>
+          Your profile is ready. Here's what you can do next:
         </p>
       </div>
 
-      {/* Summary Checklist */}
-      <div className="w-full space-y-3 text-left">
-        <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3">
-          <CheckCircle2 className="w-5 h-5 text-[#F59E0B] flex-shrink-0" />
-          <span className="text-sm font-medium text-[#0A0A0A]">Profile information completed</span>
-        </div>
-        {isSeeker && (
-          <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 text-[#F59E0B] flex-shrink-0" />
-            <span className="text-sm font-medium text-[#0A0A0A]">Service interests selected</span>
-          </div>
-        )}
-        {isProvider && (
-          <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 text-[#F59E0B] flex-shrink-0" />
-            <span className="text-sm font-medium text-[#0A0A0A]">Service skills configured</span>
-          </div>
-        )}
+      {/* Checklist */}
+      <div className="w-full space-y-4 text-left mt-2">
+        {checklist.map((item, index) => {
+          const Icon = item.icon;
+          const delay = 600 + index * 100;
+          return (
+            <div key={index} className="flex items-center gap-4 bg-white p-4 rounded-xl border border-[#E5E7EB] animate-slide-in-left" style={{ animationDelay: `${delay}ms` }}>
+              <div className="w-10 h-10 rounded-full bg-[#FAFAFA] flex items-center justify-center flex-shrink-0">
+                <Icon className="w-5 h-5 text-[#F59E0B]" />
+              </div>
+              <span className="font-bold text-sm text-[#0A0A0A]">{item.text}</span>
+            </div>
+          );
+        })}
       </div>
 
-      {/* CTAs */}
-      <div className="flex flex-col gap-3 w-full pt-4">
-        {isSeeker && (
-          <button
-            onClick={() => handleFinish('/services')}
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-4 bg-[#0A0A0A] text-white rounded-xl font-bold transition-colors hover:bg-[#F59E0B] hover:text-[#0A0A0A] disabled:opacity-50"
-          >
-            {loading ? 'Finishing...' : 'Explore Services'}
-          </button>
-        )}
+      {/* Action Buttons */}
+      <div className="flex flex-col w-full gap-3 pt-6 animate-step-btn" style={{ animationDelay: '900ms' }}>
         <button
           onClick={() => handleFinish('/dashboard')}
-          disabled={loading}
-          className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold transition-colors disabled:opacity-50 ${
-            isSeeker
-              ? 'bg-white text-[#0A0A0A] border border-[#0A0A0A] hover:bg-[#F59E0B] hover:border-[#F59E0B]'
-              : 'bg-[#0A0A0A] text-white hover:bg-[#F59E0B] hover:text-[#0A0A0A]'
-          }`}
+          className="w-full py-4 bg-[#0A0A0A] text-white rounded-xl font-bold transition-all duration-200 hover:bg-[#F59E0B] hover:text-[#0A0A0A] active:scale-[0.98]"
         >
-          {loading ? 'Finishing...' : 'View Dashboard'}
+          Go to Dashboard
+        </button>
+        <button
+          onClick={() => handleFinish('/services')}
+          className="w-full py-4 bg-white border-2 border-[#E5E7EB] text-[#0A0A0A] rounded-xl font-bold transition-all duration-200 hover:border-[#0A0A0A] active:scale-[0.98]"
+        >
+          Explore Services
         </button>
       </div>
     </div>

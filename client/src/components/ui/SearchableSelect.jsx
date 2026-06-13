@@ -29,7 +29,7 @@ export default function SearchableSelect({
   return (
     <div className={`space-y-1.5 ${className}`} ref={ref}>
       {label && (
-        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">
+        <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">
           {label}
         </label>
       )}
@@ -39,10 +39,10 @@ export default function SearchableSelect({
         onClick={() => { setOpen(!open); setQuery(''); }}
         className={`w-full flex items-center justify-between px-4 py-3 bg-white border ${
           error ? 'border-red-500' : open ? 'border-[#0A0A0A] ring-1 ring-[#F59E0B]' : 'border-[#E5E7EB]'
-        } rounded-lg text-sm transition-all focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]`}
+        } rounded-lg text-sm transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]`}
       >
         <span className={`truncate ${value ? 'text-[#0A0A0A]' : 'text-[#6B7280]'}`}>{value || placeholder}</span>
-        <ChevronDown className={`w-4 h-4 flex-shrink-0 text-[#6B7280] transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 flex-shrink-0 text-[#6B7280] transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (

@@ -434,3 +434,101 @@ body {
   outline: 2px solid var(--border-focus);
   outline-offset: 2px;
 }
+
+/* ======================================================
+   Onboarding Transitions & Animations
+   ====================================================== */
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideOutLeft {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(-32px); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideOutRight {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(32px); }
+}
+
+@keyframes stepFadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes stepFadeSlideRight {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bounceScale {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bigBounceScale {
+  0% { opacity: 0; transform: scale(0); }
+  60% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulseSnap {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
+.step-enter-forward {
+  animation: slideInRight 350ms ease-in-out forwards;
+}
+.step-exit-forward {
+  animation: slideOutLeft 350ms ease-in-out forwards;
+}
+.step-enter-backward {
+  animation: slideInLeft 350ms ease-in-out forwards;
+}
+.step-exit-backward {
+  animation: slideOutRight 350ms ease-in-out forwards;
+}
+
+.animate-step-heading {
+  opacity: 0;
+  animation: stepFadeSlideUp 300ms ease-out 0ms forwards;
+}
+.animate-step-subheading {
+  opacity: 0;
+  animation: stepFadeSlideUp 300ms ease-out 100ms forwards;
+}
+.animate-step-field {
+  opacity: 0;
+  animation: stepFadeSlideUp 300ms ease-out forwards; /* Delays added inline */
+}
+.animate-step-btn {
+  opacity: 0;
+  animation: stepFadeSlideUp 300ms ease-out 400ms forwards;
+}
+.animate-slide-in-left {
+  opacity: 0;
+  animation: stepFadeSlideRight 300ms ease-out forwards;
+}
+
+.bounce-scale {
+  animation: bounceScale 400ms ease-in-out;
+}
+.big-bounce-scale {
+  opacity: 0;
+  animation: bigBounceScale 500ms ease-in-out forwards;
+}
+.pulse-snap {
+  animation: pulseSnap 150ms ease-in-out;
+}
+

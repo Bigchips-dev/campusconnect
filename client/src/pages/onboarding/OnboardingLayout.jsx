@@ -12,6 +12,9 @@ export default function OnboardingLayout() {
   const { user, isOnboarded, refreshUser } = useAuth();
   const [progress, setProgress] = useState(null);
   const [currentIdx, setCurrentIdx] = useState(0);
+  const [displayIdx, setDisplayIdx] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
+  const [direction, setDirection] = useState('forward');
   const [loading, setLoading] = useState(true);
 
   // If already onboarded, redirect
@@ -41,15 +44,19 @@ export default function OnboardingLayout() {
           const stepKeys = steps.map((s) => s.key);
           if (dbStep >= 3 && !stepKeys.includes('complete')) {
             setCurrentIdx(steps.length - 1);
+            setDisplayIdx(steps.length - 1);
           } else if (dbStep >= 3) {
             setCurrentIdx(steps.length - 1); // complete
+            setDisplayIdx(steps.length - 1);
           } else if (dbStep >= 2) {
             // After interests, find services or complete
             const servicesIdx = stepKeys.indexOf('services');
             setCurrentIdx(servicesIdx >= 0 ? servicesIdx : steps.length - 1);
+            setDisplayIdx(servicesIdx >= 0 ? servicesIdx : steps.length - 1);
           } else if (dbStep >= 1) {
             // After profile, find interests or services or complete
             setCurrentIdx(1);
+            setDisplayIdx(1);
           }
         }
       } catch (err) {
@@ -74,14 +81,32 @@ export default function OnboardingLayout() {
   }, []);
 
   const goNext = () => {
-    if (currentIdx < steps.length - 1) setCurrentIdx(currentIdx + 1);
+    if (currentIdx < steps.length - 1) {
+      setDirection('forward');
+      setIsExiting(true);
+      setTimeout(() => {
+        setCurrentIdx(currentIdx + 1);
+        setDisplayIdx(currentIdx + 1);
+        setIsExiting(false);
+      }, 350);
+    }
   };
 
   const goBack = () => {
-    if (currentIdx > 0) setCurrentIdx(currentIdx - 1);
+    if (currentIdx > 0) {
+      setDirection('backward');
+      setIsExiting(true);
+      setTimeout(() => {
+        setCurrentIdx(currentIdx - 1);
+        setDisplayIdx(currentIdx - 1);
+        setIsExiting(false);
+      }, 350);
+    }
   };
 
-  if (loading) {
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.onboardingComplete) return <Navigate to="/dashboard" replace />;
+  if (!progress && loading) {
     return (
       <div className="flex items-center justify-center min-h-[80vh]">
         <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
@@ -89,7 +114,7 @@ export default function OnboardingLayout() {
     );
   }
 
-  const StepComponent = steps[currentIdx].component;
+  const StepComponent = steps[displayIdx].component;
   const isLast = steps[currentIdx].key === 'complete';
   const progressPercent = ((currentIdx + 1) / steps.length) * 100;
 
@@ -111,24 +136,29 @@ export default function OnboardingLayout() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col items-center w-full">
-        <div className="w-full max-w-[640px] px-4 py-12 flex flex-col h-full">
+        <div className="w-full max-w-[640px] px-4 pt-16 pb-24 flex flex-col h-full overflow-hidden">
           {/* Progress indicators */}
-          <div className="flex items-center justify-between relative mb-12">
-            <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-[#E5E7EB] z-0" />
+          <div className="flex items-center justify-between relative mb-16">
+            <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-[#E5E7EB] z-0 overflow-hidden">
+              {/* Animated connecting line fill */}
+              <div
+                className="h-full bg-[#F59E0B] transition-all duration-400 ease-in-out"
+                style={{ width: `${(displayIdx / (steps.length - 1)) * 100}%` }}
+              />
+            </div>
             
             {steps.map((step, i) => {
-              const isCompleted = i < currentIdx;
-              const isActive = i === currentIdx;
+              const isCompleted = i < displayIdx;
+              const isActive = i === displayIdx;
               
               return (
                 <div key={step.key} className="relative z-10 flex flex-col items-center gap-2 bg-white px-2">
                   <div
-                    className={[
-                      'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all',
-                      isCompleted ? 'bg-[#F59E0B] text-white' :
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-400 ${
+                      isCompleted ? 'bg-[#F59E0B] text-white bounce-scale' :
                       isActive ? 'bg-[#0A0A0A] text-white' :
-                      'bg-[#FAFAFA] text-[#6B7280] border border-[#E5E7EB]',
-                    ].join(' ')}
+                      'bg-[#FAFAFA] text-[#6B7280] border border-[#E5E7EB]'
+                    }`}
                   >
                     {isCompleted ? '✓' : i + 1}
                   </div>
@@ -141,11 +171,18 @@ export default function OnboardingLayout() {
           </div>
 
           {/* Step content */}
-          <div className="w-full flex-1 animate-fade-in mt-4" key={currentIdx}>
+          <div
+            className={`w-full flex-1 ${
+              isExiting
+                ? direction === 'forward' ? 'step-exit-forward' : 'step-exit-backward'
+                : direction === 'forward' ? 'step-enter-forward' : 'step-enter-backward'
+            }`}
+            key={displayIdx}
+          >
             <StepComponent
               progress={progress}
               onNext={goNext}
-              onBack={currentIdx > 0 ? goBack : null}
+              onBack={displayIdx > 0 ? goBack : null}
               user={user}
               refreshUser={refreshUser}
             />

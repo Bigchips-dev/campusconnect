@@ -33,16 +33,16 @@ export default function StepComplete({ user, refreshUser }) {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8 w-full max-w-md mx-auto">
+    <div className="flex flex-col items-center justify-center h-full min-h-[70vh] gap-10 w-full max-w-md mx-auto pb-10">
       {/* Icon */}
-      <div className="w-24 h-24 rounded-full bg-[#F59E0B] flex items-center justify-center big-bounce-scale mb-4">
+      <div className="w-24 h-24 rounded-full bg-[#F59E0B] flex items-center justify-center big-bounce-scale mb-2">
         <Check className="w-12 h-12 text-white" strokeWidth={3} />
       </div>
 
       {/* Header */}
-      <div className="text-center">
-        <h2 className="text-[2.5rem] md:text-[3rem] font-[800] leading-[1.1] text-[#0A0A0A] mb-3 tracking-tight animate-step-heading" style={{ animationDelay: '400ms' }}>
-          You're all set, {user?.firstName}!
+      <div className="text-center mb-2">
+        <h2 className="text-[2.5rem] md:text-[3rem] font-[800] leading-[1.1] text-[#0A0A0A] mb-4 tracking-tight animate-step-heading" style={{ animationDelay: '400ms' }}>
+          You're all set, {user?.firstName || 'Big'}!
         </h2>
         <p className="text-base font-normal text-[#6B7280] animate-step-subheading" style={{ animationDelay: '500ms' }}>
           Your profile is ready. Here's what you can do next:
@@ -66,16 +66,16 @@ export default function StepComplete({ user, refreshUser }) {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col w-full gap-3 pt-6 animate-step-btn" style={{ animationDelay: '900ms' }}>
+      <div className="flex flex-col items-center w-full gap-4 pt-10 animate-step-btn" style={{ animationDelay: '900ms' }}>
         <button
           onClick={() => handleFinish('/dashboard')}
-          className="w-full py-4 bg-[#0A0A0A] text-white rounded-xl font-bold transition-all duration-200 hover:bg-[#F59E0B] hover:text-[#0A0A0A] active:scale-[0.98]"
+          className="w-[280px] py-4 bg-[#0A0A0A] text-white rounded-lg font-bold transition-all duration-200 hover:bg-[#F59E0B] hover:text-[#0A0A0A] active:scale-[0.98]"
         >
           Go to Dashboard
         </button>
         <button
           onClick={() => handleFinish('/services')}
-          className="w-full py-4 bg-white border-2 border-[#E5E7EB] text-[#0A0A0A] rounded-xl font-bold transition-all duration-200 hover:border-[#0A0A0A] active:scale-[0.98]"
+          className="w-[280px] py-4 bg-white border border-[#0A0A0A] text-[#0A0A0A] rounded-lg font-bold transition-all duration-200 hover:bg-[#FAFAFA] active:scale-[0.98]"
         >
           Explore Services
         </button>

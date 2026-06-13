@@ -1,9 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
-import { Mail, Lock, User, Sparkles, Search, Briefcase } from 'lucide-react';
+import { Eye, EyeOff, Check, Search, Briefcase } from 'lucide-react';
 
 export default function Register() {
   const { register } = useAuth();
@@ -12,8 +10,27 @@ export default function Register() {
   const [form, setForm] = useState({
     fullName: '', email: '', password: '', confirmPassword: '', roles: ['SEEKER'],
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  /* ---- Hide global navbar & footer ---- */
+  useEffect(() => {
+    const globalHeader = document.querySelector('header');
+    const mainEl = document.querySelector('main');
+    const globalFooter = mainEl?.parentElement?.querySelector(':scope > footer');
+
+    if (globalHeader) globalHeader.style.display = 'none';
+    if (mainEl) mainEl.style.paddingTop = '0';
+    if (globalFooter) globalFooter.style.display = 'none';
+
+    return () => {
+      if (globalHeader) globalHeader.style.display = '';
+      if (mainEl) mainEl.style.paddingTop = '';
+      if (globalFooter) globalFooter.style.display = '';
+    };
+  }, []);
 
   const toggleRole = (role) => {
     setForm((prev) => {
@@ -62,77 +79,397 @@ export default function Register() {
     }
   };
 
+  /* ---- Shared input style builder ---- */
+  const inputStyle = (hasError) => ({
+    width: '100%',
+    padding: '14px 16px',
+    fontSize: '15px',
+    fontFamily: 'inherit',
+    color: '#0A0A0A',
+    background: '#FFFFFF',
+    border: `1.5px solid ${hasError ? '#EF4444' : '#E5E7EB'}`,
+    borderRadius: '12px',
+    outline: 'none',
+    transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+  });
+
+  const handleFocus = (e) => {
+    e.target.style.borderColor = '#0A0A0A';
+    e.target.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.15)';
+  };
+  const handleBlur = (e) => {
+    e.target.style.borderColor = '#E5E7EB';
+    e.target.style.boxShadow = 'none';
+  };
+
+  const bullets = [
+    '18 service categories',
+    'Direct messaging with providers',
+    'Book services in seconds',
+  ];
+
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 relative">
-      <div className="absolute top-1/4 right-1/3 w-80 h-80 bg-primary-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-secondary-500/10 rounded-full blur-[100px] pointer-events-none" />
+    <div
+      style={{
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        display: 'flex',
+        minHeight: '100vh',
+        background: '#FFFFFF',
+      }}
+    >
+      {/* ==================== INLINE ANIMATIONS ==================== */}
+      <style>{`
+        @keyframes cc-slide-left {
+          from { opacity: 0; transform: translateX(-40px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes cc-slide-right {
+          from { opacity: 0; transform: translateX(40px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
 
-      <div className="w-full max-w-md surface rounded-2xl p-8 animate-fade-in relative z-10 shadow-xl">
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-500/25">
-            <Sparkles className="w-7 h-7 text-white" />
+      {/* ==================== LEFT COLUMN — BRANDING ==================== */}
+      <div
+        style={{
+          width: '50%',
+          background: '#0A0A0A',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 'clamp(40px, 5vw, 80px)',
+          animation: 'cc-slide-left 0.4s ease-out forwards',
+        }}
+        className="hidden lg:flex"
+      >
+        <div style={{ maxWidth: '440px' }}>
+          {/* Logo text */}
+          <h1 style={{ fontSize: 'clamp(40px, 5vw, 56px)', fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', margin: 0 }}>
+            <span style={{ color: '#FFFFFF' }}>Campus</span>
+            <br />
+            <span style={{ color: '#F59E0B' }}>Connect.</span>
+          </h1>
+
+          {/* Tagline */}
+          <p style={{ color: '#9CA3AF', fontSize: '16px', lineHeight: 1.6, marginTop: '24px', maxWidth: '360px' }}>
+            The marketplace where university students buy, sell, and offer services — on campus.
+          </p>
+
+          {/* Bullet points */}
+          <div style={{ marginTop: '40px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {bullets.map((text) => (
+              <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    background: 'rgba(245,158,11,0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Check style={{ width: '14px', height: '14px', color: '#F59E0B' }} />
+                </div>
+                <span style={{ color: '#9CA3AF', fontSize: '15px' }}>{text}</span>
+              </div>
+            ))}
           </div>
-          <h1 className="heading-2xl mb-1">Create your account</h1>
-          <p className="label-sm">Join CampusConnect today</p>
         </div>
+      </div>
 
-        {error && (
-          <div className="mb-6 p-3 rounded-xl bg-error-50 dark:bg-error-700/10 border border-error-200 dark:border-error-700/30 text-sm text-error-600 dark:text-error-400">
-            {error}
-          </div>
-        )}
+      {/* ==================== RIGHT COLUMN — FORM ==================== */}
+      <div
+        style={{
+          width: '100%',
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 'clamp(32px, 5vw, 64px)',
+          animation: 'cc-slide-right 0.4s ease-out forwards',
+          overflowY: 'auto',
+        }}
+      >
+        <div style={{ width: '100%', maxWidth: '440px' }}>
+          {/* Logo */}
+          <Link to="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', marginBottom: '36px' }}>
+            <span style={{ fontSize: '22px', fontWeight: 800, color: '#0A0A0A' }}>Campus</span>
+            <span style={{ fontSize: '22px', fontWeight: 800, color: '#F59E0B' }}>Connect</span>
+          </Link>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input label="Full Name" icon={User} placeholder="John Doe" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} required />
-          <Input label="Email" type="email" icon={Mail} placeholder="you@email.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
-          <Input label="Password" type="password" icon={Lock} placeholder="Min 8 characters" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
-          <Input label="Confirm Password" type="password" icon={Lock} placeholder="Re-enter password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} required />
+          {/* Heading */}
+          <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.02em', margin: 0 }}>
+            Create your account.
+          </h2>
+          <p style={{ color: '#6B7280', fontSize: '15px', marginTop: '8px', marginBottom: '28px' }}>
+            Join CampusConnect today
+          </p>
 
-          {/* Role selection */}
-          <div>
-            <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-heading)' }}>I want to…</label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => toggleRole('SEEKER')}
-                className={[
-                  'flex flex-col items-center gap-2 p-4 rounded-xl border-2 text-sm font-semibold transition-all cursor-pointer',
-                  form.roles.includes('SEEKER')
-                    ? 'bg-primary-50 dark:bg-primary-950/30 border-primary-500 text-primary-600 dark:text-primary-300'
-                    : 'border-[var(--border-default)] hover:border-[var(--border-strong)]',
-                ].join(' ')}
-                style={!form.roles.includes('SEEKER') ? { color: 'var(--text-muted)' } : undefined}
-              >
-                <Search className="w-6 h-6" />
-                Find Services
-              </button>
-              <button
-                type="button"
-                onClick={() => toggleRole('PROVIDER')}
-                className={[
-                  'flex flex-col items-center gap-2 p-4 rounded-xl border-2 text-sm font-semibold transition-all cursor-pointer',
-                  form.roles.includes('PROVIDER')
-                    ? 'bg-secondary-50 dark:bg-secondary-950/30 border-secondary-500 text-secondary-600 dark:text-secondary-300'
-                    : 'border-[var(--border-default)] hover:border-[var(--border-strong)]',
-                ].join(' ')}
-                style={!form.roles.includes('PROVIDER') ? { color: 'var(--text-muted)' } : undefined}
-              >
-                <Briefcase className="w-6 h-6" />
-                Offer Services
-              </button>
+          {/* Error */}
+          {error && (
+            <div
+              style={{
+                padding: '12px 16px',
+                borderRadius: '12px',
+                background: '#FEF2F2',
+                border: '1px solid #FECACA',
+                color: '#DC2626',
+                fontSize: '14px',
+                marginBottom: '20px',
+              }}
+            >
+              {error}
             </div>
-            <p className="text-xs mt-2" style={{ color: 'var(--text-faint)' }}>You can select both!</p>
-          </div>
+          )}
 
-          <Button type="submit" className="w-full" size="lg" loading={loading}>
-            Create Account
-          </Button>
-        </form>
+          {/* Form */}
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+            {/* Full Name */}
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#0A0A0A', marginBottom: '8px' }}>
+                Full Name
+              </label>
+              <input
+                type="text"
+                placeholder="John Doe"
+                value={form.fullName}
+                onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                required
+                style={inputStyle(false)}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+            </div>
 
-        <p className="text-center text-sm mt-6" style={{ color: 'var(--text-muted)' }}>
-          Already have an account?{' '}
-          <Link to="/login" className="text-primary-500 hover:text-primary-400 font-semibold transition-colors">Sign in</Link>
-        </p>
+            {/* Email */}
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#0A0A0A', marginBottom: '8px' }}>
+                Email
+              </label>
+              <input
+                type="email"
+                placeholder="you@email.com"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+                style={inputStyle(false)}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#0A0A0A', marginBottom: '8px' }}>
+                Password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Min 8 characters"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  required
+                  style={{ ...inputStyle(false), paddingRight: '48px' }}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '14px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '4px',
+                    display: 'flex',
+                    color: '#9CA3AF',
+                  }}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff style={{ width: '18px', height: '18px' }} /> : <Eye style={{ width: '18px', height: '18px' }} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#0A0A0A', marginBottom: '8px' }}>
+                Confirm Password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  placeholder="Re-enter password"
+                  value={form.confirmPassword}
+                  onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                  required
+                  style={{ ...inputStyle(false), paddingRight: '48px' }}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  style={{
+                    position: 'absolute',
+                    right: '14px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '4px',
+                    display: 'flex',
+                    color: '#9CA3AF',
+                  }}
+                  tabIndex={-1}
+                >
+                  {showConfirm ? <EyeOff style={{ width: '18px', height: '18px' }} /> : <Eye style={{ width: '18px', height: '18px' }} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Role Selection */}
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: '#0A0A0A', marginBottom: '12px' }}>
+                I want to...
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                {/* Find Services */}
+                <button
+                  type="button"
+                  onClick={() => toggleRole('SEEKER')}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '20px 16px',
+                    borderRadius: '14px',
+                    border: `2px solid ${form.roles.includes('SEEKER') ? '#F59E0B' : '#E5E7EB'}`,
+                    background: form.roles.includes('SEEKER') ? 'rgba(245,158,11,0.04)' : '#FFFFFF',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    transition: 'border-color 0.2s ease, background 0.2s ease, transform 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => { if (!form.roles.includes('SEEKER')) e.currentTarget.style.borderColor = '#D1D5DB'; }}
+                  onMouseLeave={(e) => { if (!form.roles.includes('SEEKER')) e.currentTarget.style.borderColor = '#E5E7EB'; }}
+                >
+                  <Search
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      color: form.roles.includes('SEEKER') ? '#F59E0B' : '#9CA3AF',
+                      transition: 'color 0.2s ease',
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: form.roles.includes('SEEKER') ? '#0A0A0A' : '#6B7280',
+                      transition: 'color 0.2s ease',
+                    }}
+                  >
+                    Find Services
+                  </span>
+                </button>
+
+                {/* Offer Services */}
+                <button
+                  type="button"
+                  onClick={() => toggleRole('PROVIDER')}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '20px 16px',
+                    borderRadius: '14px',
+                    border: `2px solid ${form.roles.includes('PROVIDER') ? '#F59E0B' : '#E5E7EB'}`,
+                    background: form.roles.includes('PROVIDER') ? 'rgba(245,158,11,0.04)' : '#FFFFFF',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    transition: 'border-color 0.2s ease, background 0.2s ease, transform 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => { if (!form.roles.includes('PROVIDER')) e.currentTarget.style.borderColor = '#D1D5DB'; }}
+                  onMouseLeave={(e) => { if (!form.roles.includes('PROVIDER')) e.currentTarget.style.borderColor = '#E5E7EB'; }}
+                >
+                  <Briefcase
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      color: form.roles.includes('PROVIDER') ? '#F59E0B' : '#9CA3AF',
+                      transition: 'color 0.2s ease',
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: form.roles.includes('PROVIDER') ? '#0A0A0A' : '#6B7280',
+                      transition: 'color 0.2s ease',
+                    }}
+                  >
+                    Offer Services
+                  </span>
+                </button>
+              </div>
+              <p style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '8px' }}>You can select both</p>
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: '100%',
+                padding: '16px',
+                fontSize: '16px',
+                fontWeight: 700,
+                fontFamily: 'inherit',
+                color: '#FFFFFF',
+                background: '#0A0A0A',
+                border: 'none',
+                borderRadius: '12px',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.6 : 1,
+                transition: 'background 0.2s ease, transform 0.2s ease',
+                marginTop: '4px',
+              }}
+              onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.background = '#1a1a1a'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#0A0A0A'; e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              {loading ? 'Creating account...' : 'Create Account'}
+            </button>
+          </form>
+
+          {/* Sign in link */}
+          <p style={{ textAlign: 'center', fontSize: '14px', color: '#6B7280', margin: '24px 0 0' }}>
+            Already have an account?{' '}
+            <Link
+              to="/login"
+              style={{
+                color: '#F59E0B',
+                fontWeight: 700,
+                textDecoration: 'none',
+                transition: 'color 0.2s ease',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#D97706'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = '#F59E0B'; }}
+            >
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

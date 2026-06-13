@@ -1,9 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
-import { Mail, Lock, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Check } from 'lucide-react';
 
 export default function Login() {
   const { login } = useAuth();
@@ -15,8 +13,26 @@ export default function Login() {
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  /* ---- Hide global navbar & footer ---- */
+  useEffect(() => {
+    const globalHeader = document.querySelector('header');
+    const mainEl = document.querySelector('main');
+    const globalFooter = mainEl?.parentElement?.querySelector(':scope > footer');
+
+    if (globalHeader) globalHeader.style.display = 'none';
+    if (mainEl) mainEl.style.paddingTop = '0';
+    if (globalFooter) globalFooter.style.display = 'none';
+
+    return () => {
+      if (globalHeader) globalHeader.style.display = '';
+      if (mainEl) mainEl.style.paddingTop = '';
+      if (globalFooter) globalFooter.style.display = '';
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +40,6 @@ export default function Login() {
     setLoading(true);
     try {
       const result = await login(form.email, form.password, rememberMe);
-      // If onboarding not complete, ProtectedRoute will redirect
       navigate(result.user.onboardingComplete ? from : '/onboarding', { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid credentials');
@@ -33,57 +48,290 @@ export default function Login() {
     }
   };
 
+  /* ---- Shared input style builder ---- */
+  const inputStyle = (hasError) => ({
+    width: '100%',
+    padding: '14px 16px',
+    fontSize: '15px',
+    fontFamily: 'inherit',
+    color: '#0A0A0A',
+    background: '#FFFFFF',
+    border: `1.5px solid ${hasError ? '#EF4444' : '#E5E7EB'}`,
+    borderRadius: '12px',
+    outline: 'none',
+    transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+  });
+
+  const handleFocus = (e) => {
+    e.target.style.borderColor = '#0A0A0A';
+    e.target.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.15)';
+  };
+  const handleBlur = (e) => {
+    e.target.style.borderColor = '#E5E7EB';
+    e.target.style.boxShadow = 'none';
+  };
+
+  const bullets = [
+    '18 service categories',
+    'Direct messaging with providers',
+    'Book services in seconds',
+  ];
+
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 relative">
-      {/* Background accents */}
-      <div className="absolute top-1/4 left-1/3 w-80 h-80 bg-primary-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-secondary-500/10 rounded-full blur-[100px] pointer-events-none" />
+    <div
+      style={{
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        display: 'flex',
+        minHeight: '100vh',
+        background: '#FFFFFF',
+      }}
+    >
+      {/* ==================== INLINE ANIMATIONS ==================== */}
+      <style>{`
+        @keyframes cc-slide-left {
+          from { opacity: 0; transform: translateX(-40px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes cc-slide-right {
+          from { opacity: 0; transform: translateX(40px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
 
-      <div className="w-full max-w-md surface rounded-2xl p-8 animate-fade-in relative z-10 shadow-xl">
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-500/25">
-            <Sparkles className="w-7 h-7 text-white" />
+      {/* ==================== LEFT COLUMN — BRANDING ==================== */}
+      <div
+        style={{
+          width: '50%',
+          background: '#0A0A0A',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 'clamp(40px, 5vw, 80px)',
+          animation: 'cc-slide-left 0.4s ease-out forwards',
+        }}
+        className="hidden lg:flex"
+      >
+        <div style={{ maxWidth: '440px' }}>
+          {/* Logo text */}
+          <h1 style={{ fontSize: 'clamp(40px, 5vw, 56px)', fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', margin: 0 }}>
+            <span style={{ color: '#FFFFFF' }}>Campus</span>
+            <br />
+            <span style={{ color: '#F59E0B' }}>Connect.</span>
+          </h1>
+
+          {/* Tagline */}
+          <p style={{ color: '#9CA3AF', fontSize: '16px', lineHeight: 1.6, marginTop: '24px', maxWidth: '360px' }}>
+            The marketplace where university students buy, sell, and offer services — on campus.
+          </p>
+
+          {/* Bullet points */}
+          <div style={{ marginTop: '40px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {bullets.map((text) => (
+              <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    background: 'rgba(245,158,11,0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Check style={{ width: '14px', height: '14px', color: '#F59E0B' }} />
+                </div>
+                <span style={{ color: '#9CA3AF', fontSize: '15px' }}>{text}</span>
+              </div>
+            ))}
           </div>
-          <h1 className="heading-2xl mb-1">Welcome back</h1>
-          <p className="label-sm">Sign in to your CampusConnect account</p>
         </div>
+      </div>
 
-        {error && (
-          <div className="mb-6 p-3 rounded-xl bg-error-50 dark:bg-error-700/10 border border-error-200 dark:border-error-700/30 text-sm text-error-600 dark:text-error-400">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <Input label="Email" type="email" icon={Mail} placeholder="you@email.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
-          <Input label="Password" type="password" icon={Lock} placeholder="••••••••" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
-
-          <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-[var(--border-default)] text-primary-500 focus:ring-primary-500/25 cursor-pointer"
-              />
-              <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Remember me</span>
-            </label>
-            <Link to="/forgot-password" className="text-sm font-medium text-primary-500 hover:text-primary-400 transition-colors">
-              Forgot password?
-            </Link>
-          </div>
-
-          <Button type="submit" className="w-full" size="lg" loading={loading}>
-            Sign In
-          </Button>
-        </form>
-
-        <p className="text-center text-sm mt-6" style={{ color: 'var(--text-muted)' }}>
-          Don't have an account?{' '}
-          <Link to="/register" className="text-primary-500 hover:text-primary-400 font-semibold transition-colors">
-            Sign up
+      {/* ==================== RIGHT COLUMN — FORM ==================== */}
+      <div
+        style={{
+          width: '100%',
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 'clamp(32px, 5vw, 64px)',
+          animation: 'cc-slide-right 0.4s ease-out forwards',
+        }}
+      >
+        <div style={{ width: '100%', maxWidth: '420px' }}>
+          {/* Logo */}
+          <Link to="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', marginBottom: '40px' }}>
+            <span style={{ fontSize: '22px', fontWeight: 800, color: '#0A0A0A' }}>Campus</span>
+            <span style={{ fontSize: '22px', fontWeight: 800, color: '#F59E0B' }}>Connect</span>
           </Link>
-        </p>
+
+          {/* Heading */}
+          <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.02em', margin: 0 }}>
+            Welcome back.
+          </h2>
+          <p style={{ color: '#6B7280', fontSize: '15px', marginTop: '8px', marginBottom: '32px' }}>
+            Sign in to your account
+          </p>
+
+          {/* Error */}
+          {error && (
+            <div
+              style={{
+                padding: '12px 16px',
+                borderRadius: '12px',
+                background: '#FEF2F2',
+                border: '1px solid #FECACA',
+                color: '#DC2626',
+                fontSize: '14px',
+                marginBottom: '24px',
+              }}
+            >
+              {error}
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {/* Email */}
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#0A0A0A', marginBottom: '8px' }}>
+                Email
+              </label>
+              <input
+                type="email"
+                placeholder="you@email.com"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+                style={inputStyle(false)}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#0A0A0A', marginBottom: '8px' }}>
+                Password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  required
+                  style={{ ...inputStyle(false), paddingRight: '48px' }}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '14px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '4px',
+                    display: 'flex',
+                    color: '#9CA3AF',
+                  }}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff style={{ width: '18px', height: '18px' }} /> : <Eye style={{ width: '18px', height: '18px' }} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Remember me + Forgot */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    accentColor: '#F59E0B',
+                    cursor: 'pointer',
+                  }}
+                />
+                <span style={{ fontSize: '14px', color: '#6B7280' }}>Remember me</span>
+              </label>
+              <Link
+                to="/forgot-password"
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: '#F59E0B',
+                  textDecoration: 'none',
+                  transition: 'color 0.2s ease',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = '#D97706'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = '#F59E0B'; }}
+              >
+                Forgot password?
+              </Link>
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: '100%',
+                padding: '16px',
+                fontSize: '16px',
+                fontWeight: 700,
+                fontFamily: 'inherit',
+                color: '#FFFFFF',
+                background: '#0A0A0A',
+                border: 'none',
+                borderRadius: '12px',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.6 : 1,
+                transition: 'background 0.2s ease, transform 0.2s ease',
+              }}
+              onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.background = '#1a1a1a'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#0A0A0A'; e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', margin: '28px 0' }}>
+            <div style={{ flex: 1, height: '1px', background: '#E5E7EB' }} />
+            <span style={{ fontSize: '13px', color: '#9CA3AF', fontWeight: 500 }}>or</span>
+            <div style={{ flex: 1, height: '1px', background: '#E5E7EB' }} />
+          </div>
+
+          {/* Sign up link */}
+          <p style={{ textAlign: 'center', fontSize: '14px', color: '#6B7280', margin: 0 }}>
+            Don't have an account?{' '}
+            <Link
+              to="/register"
+              style={{
+                color: '#F59E0B',
+                fontWeight: 700,
+                textDecoration: 'none',
+                transition: 'color 0.2s ease',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#D97706'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = '#F59E0B'; }}
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

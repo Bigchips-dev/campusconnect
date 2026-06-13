@@ -70,10 +70,13 @@ export default function Register() {
 
     setLoading(true);
     try {
-      await register({ firstName, lastName, email: form.email, password: form.password, roles: form.roles });
+      const payload = { firstName, lastName, email: form.email, password: form.password, roles: form.roles };
+      console.log('Sending registration payload to backend:', payload);
+      await register(payload);
       navigate('/onboarding', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data?.errors?.[0]?.message || 'Registration failed');
+      console.error('Registration API error:', err);
+      setError(err.response?.data?.message || err.response?.data?.errors?.[0]?.message || err.message || 'Registration failed');
     } finally {
       setLoading(false);
     }

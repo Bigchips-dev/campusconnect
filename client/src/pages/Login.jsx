@@ -42,7 +42,8 @@ export default function Login() {
       const result = await login(form.email, form.password, rememberMe);
       navigate(result.user.onboardingComplete ? from : '/onboarding', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid credentials');
+      console.error('Login API error:', err);
+      setError(err.response?.data?.message || err.message || 'Invalid credentials');
     } finally {
       setLoading(false);
     }

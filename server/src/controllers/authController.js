@@ -57,7 +57,8 @@ async function register(req, res, next) {
 
     res.status(201).json({ success: true, data: { user, accessToken } });
   } catch (error) {
-    next(error);
+    console.error('Registration full error trace:', error);
+    res.status(500).json({ success: false, message: error.message || 'Registration failed due to an unknown error', stack: error.stack });
   }
 }
 

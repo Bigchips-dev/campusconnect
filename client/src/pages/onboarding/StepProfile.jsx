@@ -41,9 +41,9 @@ export default function StepProfile({ progress, onNext, user }) {
   };
 
   return (
-    <div className="flex flex-col gap-10 w-full">
+    <div className="w-full max-w-[640px] mx-auto py-[40px] px-[24px]">
       {/* Header */}
-      <div className="animate-step-heading">
+      <div className="animate-step-heading mb-[40px]">
         <h2 className="text-[2.5rem] md:text-[3rem] font-[800] leading-[1.1] text-[#0A0A0A] mb-2 tracking-tight">Tell us about you.</h2>
         <p className="text-base text-[#6B7280] animate-step-subheading">Help others know who they are connecting with.</p>
       </div>
@@ -55,8 +55,8 @@ export default function StepProfile({ progress, onNext, user }) {
       )}
 
       {/* Profile photo */}
-      <div className="flex flex-col gap-4 animate-step-field" style={{ animationDelay: '200ms' }}>
-        <div className="flex items-center gap-4">
+      <div className="animate-step-field mb-[24px]" style={{ animationDelay: '200ms' }}>
+        <div className="flex items-center gap-4 mb-4">
           {form.avatarUrl ? (
             <img src={form.avatarUrl} alt="Avatar" className="w-24 h-24 rounded-full object-cover border border-[#E5E7EB]" />
           ) : (
@@ -67,20 +67,20 @@ export default function StepProfile({ progress, onNext, user }) {
           )}
         </div>
         <div className="w-full">
-          <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Profile Photo URL (optional)</label>
+          <label className="block text-[0.875rem] font-[600] text-[#0A0A0A] mb-[8px]">Profile Photo URL (optional)</label>
           <input
             type="text"
             placeholder="https://example.com/photo.jpg"
             value={form.avatarUrl}
             onChange={(e) => setForm({ ...form, avatarUrl: e.target.value })}
-            className="w-full px-4 py-3 bg-white border border-[#E5E7EB] rounded-lg text-sm transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]"
+            className="w-full h-[52px] px-[16px] py-[14px] text-[1rem] bg-white border border-[#E5E7EB] rounded-[8px] transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]"
           />
         </div>
       </div>
 
       {/* Phone */}
-      <div className="animate-step-field" style={{ animationDelay: '250ms' }}>
-        <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Phone Number</label>
+      <div className="animate-step-field mb-[24px]" style={{ animationDelay: '250ms' }}>
+        <label className="block text-[0.875rem] font-[600] text-[#0A0A0A] mb-[8px]">Phone Number</label>
         <div className="relative">
           <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
           <input
@@ -88,22 +88,22 @@ export default function StepProfile({ progress, onNext, user }) {
             placeholder="+234 800 000 0000"
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className={`w-full pl-10 pr-4 py-3 bg-white border ${errors.phone ? 'border-red-500' : 'border-[#E5E7EB]'} rounded-lg text-sm transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]`}
+            className={`w-full h-[52px] pl-[40px] pr-[16px] py-[14px] text-[1rem] bg-white border ${errors.phone ? 'border-red-500' : 'border-[#E5E7EB]'} rounded-[8px] transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]`}
           />
         </div>
         {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
       </div>
 
       {/* Gender */}
-      <div className="animate-step-field" style={{ animationDelay: '300ms' }}>
-        <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Gender</label>
-        <div className="flex gap-3">
+      <div className="animate-step-field mb-[24px]" style={{ animationDelay: '300ms' }}>
+        <label className="block text-[0.875rem] font-[600] text-[#0A0A0A] mb-[8px]">Gender</label>
+        <div className="flex flex-wrap">
           {GENDERS.map((g) => (
             <button
               key={g.value}
               type="button"
               onClick={() => setForm({ ...form, gender: g.value })}
-              className={`flex-1 py-3 rounded-full text-sm font-medium border transition-all duration-150 ${
+              className={`h-[44px] px-[20px] py-[10px] text-[0.9rem] rounded-full border transition-all duration-150 mr-[8px] mb-[8px] ${
                 form.gender === g.value
                   ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
                   : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#0A0A0A]'
@@ -116,8 +116,8 @@ export default function StepProfile({ progress, onNext, user }) {
       </div>
 
       {/* Faculty */}
-      <div className="animate-step-field" style={{ animationDelay: '350ms' }}>
-        <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Faculty</label>
+      <div className="animate-step-field mb-[24px]" style={{ animationDelay: '350ms' }}>
+        <label className="block text-[0.875rem] font-[600] text-[#0A0A0A] mb-[8px]">Faculty</label>
         <SearchableSelect
           options={FACULTIES}
           value={form.faculty}
@@ -128,15 +128,15 @@ export default function StepProfile({ progress, onNext, user }) {
       </div>
 
       {/* Level */}
-      <div className="animate-step-field" style={{ animationDelay: '400ms' }}>
-        <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Level</label>
-        <div className="flex flex-wrap gap-3">
+      <div className="animate-step-field mb-[24px]" style={{ animationDelay: '400ms' }}>
+        <label className="block text-[0.875rem] font-[600] text-[#0A0A0A] mb-[8px]">Level</label>
+        <div className="flex flex-wrap">
           {LEVELS.map((lvl) => (
             <button
               key={lvl}
               type="button"
               onClick={() => setForm({ ...form, level: lvl })}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all duration-150 ${
+              className={`h-[44px] px-[20px] py-[10px] text-[0.9rem] rounded-full border transition-all duration-150 mr-[8px] mb-[8px] ${
                 form.level === lvl
                   ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
                   : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#0A0A0A]'
@@ -149,15 +149,14 @@ export default function StepProfile({ progress, onNext, user }) {
       </div>
 
       {/* Bio */}
-      <div className="animate-step-field" style={{ animationDelay: '450ms' }}>
-        <label className="block text-sm font-semibold text-[#0A0A0A] mb-1.5">Short Bio (optional)</label>
+      <div className="animate-step-field mb-[24px]" style={{ animationDelay: '450ms' }}>
+        <label className="block text-[0.875rem] font-[600] text-[#0A0A0A] mb-[8px]">Short Bio (optional)</label>
         <textarea
-          rows={3}
           placeholder="Tell others a bit about yourself…"
           value={form.bio}
           onChange={(e) => setForm({ ...form, bio: e.target.value })}
           maxLength={300}
-          className="w-full px-4 py-3 bg-white border border-[#E5E7EB] rounded-lg text-sm transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B] resize-none"
+          className="w-full min-h-[120px] px-[16px] py-[14px] text-[1rem] bg-white border border-[#E5E7EB] rounded-[8px] transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B] resize-none"
         />
         <p className="text-xs text-[#6B7280] text-right mt-1">{form.bio.length}/300</p>
       </div>

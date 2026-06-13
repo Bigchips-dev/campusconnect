@@ -138,7 +138,7 @@ export default function OnboardingLayout() {
       <div className="flex-1 flex flex-col items-center w-full">
         <div className="w-full max-w-[640px] px-4 pt-16 pb-24 flex flex-col">
           {/* Progress indicators */}
-          <div className="flex items-center justify-between relative mb-16">
+          <div className="flex items-center justify-between relative mb-12">
             <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-[#E5E7EB] z-0 overflow-hidden">
               {/* Animated connecting line fill */}
               <div
@@ -152,7 +152,7 @@ export default function OnboardingLayout() {
               const isActive = i === displayIdx;
               
               return (
-                <div key={step.key} className="relative z-10 flex flex-col items-center gap-2 bg-white px-2">
+                <div key={step.key} className="flex flex-col items-center relative z-10 bg-white px-2">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-400 ${
                       isCompleted ? 'bg-[#F59E0B] text-white bounce-scale' :
@@ -162,7 +162,7 @@ export default function OnboardingLayout() {
                   >
                     {isCompleted ? '✓' : i + 1}
                   </div>
-                  <span className={`text-xs font-medium absolute -bottom-6 whitespace-nowrap ${isActive ? 'text-[#0A0A0A]' : 'text-[#6B7280]'}`}>
+                  <span className={`text-xs font-medium mt-2 whitespace-nowrap block text-center ${isActive ? 'text-[#0A0A0A]' : 'text-[#6B7280]'}`}>
                     {step.title}
                   </span>
                 </div>

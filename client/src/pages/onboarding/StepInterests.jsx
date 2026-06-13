@@ -56,12 +56,12 @@ export default function StepInterests({ progress, onNext, onBack }) {
               key={cat.id}
               type="button"
               onClick={() => toggle(cat.id)}
-              className={`relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 text-center transition-all duration-150 cursor-pointer animate-step-field hover:-translate-y-1 hover:shadow-md ${
+              className={`relative flex flex-col items-center justify-center gap-3 p-4 h-[120px] bg-white rounded-xl text-center transition-all duration-150 cursor-pointer animate-step-field hover:-translate-y-1 hover:shadow-md ${
                 animatingId === cat.id ? 'pulse-snap' : ''
               } ${
                 isActive
-                  ? 'bg-[#0A0A0A] border-[#F59E0B]'
-                  : 'bg-white border-[#E5E7EB] hover:border-[#0A0A0A]'
+                  ? 'border-2 border-[#F59E0B]'
+                  : 'border border-[#E5E7EB] hover:border-[#0A0A0A]'
               }`}
               style={{ animationDelay: `${rowDelay}ms` }}
             >
@@ -72,12 +72,9 @@ export default function StepInterests({ progress, onNext, onBack }) {
                 </div>
               )}
 
-              {/* Icon */}
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[#FAFAFA]">
-                <Icon className="w-6 h-6" style={{ color: cat.color }} />
-              </div>
+              <Icon className="w-6 h-6 text-[#0A0A0A]" style={{ color: cat.color }} />
 
-              <span className={`text-sm font-bold leading-tight block ${isActive ? 'text-white' : 'text-[#0A0A0A]'}`}>
+              <span className="text-sm font-bold text-[#0A0A0A]">
                 {cat.name}
               </span>
             </button>

@@ -35,88 +35,70 @@ export default function StepInterests({ progress, onNext, onBack }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 w-full">
+      {/* Header */}
       <div>
-        <p className="text-sm mb-1" style={{ color: 'var(--text-muted)' }}>
-          What services are you looking for? Select all that apply.
-        </p>
-        {error && <p className="text-sm text-error-500 mt-2">{error}</p>}
+        <h2 className="text-3xl font-bold text-[#0A0A0A] mb-2">What are you looking for?</h2>
+        <p className="text-[#6B7280]">Select all the services you might need.</p>
+        {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
       </div>
 
       {/* Category cards grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {CATEGORIES.map((cat) => {
           const isActive = selected.includes(cat.id);
           const Icon = getCategoryIcon(cat.icon);
-          const virtual = isVirtualEligible(cat.id);
 
           return (
             <button
               key={cat.id}
               type="button"
               onClick={() => toggle(cat.id)}
-              className={[
-                'relative flex flex-col items-center gap-2.5 p-4 sm:p-5 rounded-2xl border-2 text-center transition-all duration-200 cursor-pointer',
+              className={`relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 text-center transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? 'shadow-md'
-                  : 'border-[var(--border-default)] hover:border-[var(--border-strong)] hover:shadow-sm',
-              ].join(' ')}
-              style={{
-                borderColor: isActive ? cat.color : undefined,
-                backgroundColor: isActive ? `${cat.color}10` : undefined,
-              }}
+                  ? 'bg-[#0A0A0A] border-[#F59E0B]'
+                  : 'bg-white border-[#E5E7EB] hover:border-[#0A0A0A]'
+              }`}
             >
               {/* Check badge */}
               {isActive && (
-                <div
-                  className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: cat.color }}
-                >
+                <div className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center bg-[#F59E0B]">
                   <Check className="w-3 h-3 text-white" />
                 </div>
               )}
 
               {/* Icon */}
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{
-                  background: `linear-gradient(135deg, ${cat.color}, ${cat.color}CC)`,
-                  boxShadow: `0 4px 12px ${cat.color}25`,
-                }}
-              >
-                <Icon className="w-5 h-5 text-white" />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[#FAFAFA]">
+                <Icon className="w-6 h-6" style={{ color: cat.color }} />
               </div>
 
-              <div className="space-y-0.5">
-                <span
-                  className="text-xs sm:text-sm font-semibold leading-tight block"
-                  style={{ color: isActive ? cat.color : 'var(--text-heading)' }}
-                >
-                  {cat.name}
-                </span>
-                {virtual && (
-                  <span className="text-[10px] font-bold uppercase text-primary-500">Virtual</span>
-                )}
-              </div>
+              <span className={`text-sm font-bold leading-tight block ${isActive ? 'text-white' : 'text-[#0A0A0A]'}`}>
+                {cat.name}
+              </span>
             </button>
           );
         })}
       </div>
 
-      <p className="text-xs text-center" style={{ color: 'var(--text-faint)' }}>
+      <p className="text-sm text-center text-[#6B7280]">
         {selected.length} selected · minimum 1 required
       </p>
 
       {/* Navigation */}
       <div className="flex items-center justify-between pt-4">
         {onBack ? (
-          <Button variant="ghost" onClick={onBack} size="md">
+          <button onClick={onBack} className="flex items-center gap-2 text-[#6B7280] hover:text-[#0A0A0A] font-medium transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back
-          </Button>
+          </button>
         ) : <div />}
-        <Button onClick={handleSubmit} size="lg" loading={loading}>
-          Continue <ArrowRight className="w-4 h-4" />
-        </Button>
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="w-1/2 flex items-center justify-center gap-2 py-4 bg-[#0A0A0A] text-white rounded-xl font-bold transition-colors hover:bg-[#F59E0B] hover:text-[#0A0A0A] disabled:opacity-50"
+        >
+          {loading ? 'Saving...' : 'Continue'}
+          {!loading && <ArrowRight className="w-5 h-5" />}
+        </button>
       </div>
     </div>
   );

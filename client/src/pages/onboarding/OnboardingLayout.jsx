@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import api from '../../lib/api';
 import StepProfile from './StepProfile';
@@ -61,6 +61,18 @@ export default function OnboardingLayout() {
     fetchProgress();
   }, []);
 
+  // Hide global header and footer during onboarding
+  useEffect(() => {
+    const header = document.querySelector('header');
+    const footer = document.querySelector('footer');
+    if (header) header.style.display = 'none';
+    if (footer) footer.style.display = 'none';
+    return () => {
+      if (header) header.style.display = '';
+      if (footer) footer.style.display = '';
+    };
+  }, []);
+
   const goNext = () => {
     if (currentIdx < steps.length - 1) setCurrentIdx(currentIdx + 1);
   };
@@ -82,62 +94,71 @@ export default function OnboardingLayout() {
   const progressPercent = ((currentIdx + 1) / steps.length) * 100;
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col">
-      {/* Header */}
-      <div className="border-b" style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--bg-surface)' }}>
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center">
-              <Sparkles className="w-4.5 h-4.5 text-white" />
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-primary-500">Step {currentIdx + 1} of {steps.length}</p>
-              <h2 className="heading-xl">{steps[currentIdx].title}</h2>
-            </div>
+    <div className="min-h-screen bg-white flex flex-col font-['Plus_Jakarta_Sans'] text-[#0A0A0A]">
+      {/* Custom Minimal Navbar */}
+      <header className="border-b border-[#E5E7EB] bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <Link to="/" className="text-xl font-bold tracking-tight">
+            Campus<span className="text-[#F59E0B]">Connect</span>
+          </Link>
+          <div className="flex items-center gap-4">
+            <Link to="/services" className="text-sm font-medium hover:text-[#F59E0B] transition-colors">
+              Browse
+            </Link>
           </div>
+        </div>
+      </header>
 
-          {/* Progress bar */}
-          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bg-muted)' }}>
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-500 ease-out"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-
-          {/* Step indicators */}
-          <div className="flex items-center gap-2 mt-3">
-            {steps.map((step, i) => (
-              <div key={step.key} className="flex items-center gap-2">
-                <div
-                  className={[
-                    'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all',
-                    i < currentIdx ? 'bg-primary-500 text-white' :
-                    i === currentIdx ? 'bg-primary-100 dark:bg-primary-950/40 text-primary-600 dark:text-primary-300 ring-2 ring-primary-500' :
-                    'text-[var(--text-faint)]',
-                  ].join(' ')}
-                  style={i > currentIdx ? { backgroundColor: 'var(--bg-muted)' } : undefined}
-                >
-                  {i < currentIdx ? '✓' : i + 1}
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col items-center w-full">
+        <div className="w-full max-w-[640px] px-4 py-12 flex flex-col h-full">
+          {/* Progress indicators */}
+          <div className="flex items-center justify-between relative mb-12">
+            <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-[#E5E7EB] z-0" />
+            
+            {steps.map((step, i) => {
+              const isCompleted = i < currentIdx;
+              const isActive = i === currentIdx;
+              
+              return (
+                <div key={step.key} className="relative z-10 flex flex-col items-center gap-2 bg-white px-2">
+                  <div
+                    className={[
+                      'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all',
+                      isCompleted ? 'bg-[#F59E0B] text-white' :
+                      isActive ? 'bg-[#0A0A0A] text-white' :
+                      'bg-[#FAFAFA] text-[#6B7280] border border-[#E5E7EB]',
+                    ].join(' ')}
+                  >
+                    {isCompleted ? '✓' : i + 1}
+                  </div>
+                  <span className={`text-xs font-medium absolute -bottom-6 whitespace-nowrap ${isActive ? 'text-[#0A0A0A]' : 'text-[#6B7280]'}`}>
+                    {step.title}
+                  </span>
                 </div>
-                {i < steps.length - 1 && (
-                  <div className="w-8 h-0.5 rounded-full" style={{ backgroundColor: i < currentIdx ? 'var(--color-primary-500)' : 'var(--bg-muted)' }} />
-                )}
-              </div>
-            ))}
+              );
+            })}
+          </div>
+
+          {/* Step content */}
+          <div className="w-full flex-1 animate-fade-in mt-4" key={currentIdx}>
+            <StepComponent
+              progress={progress}
+              onNext={goNext}
+              onBack={currentIdx > 0 ? goBack : null}
+              user={user}
+              refreshUser={refreshUser}
+            />
           </div>
         </div>
       </div>
 
-      {/* Step content */}
-      <div className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-8 animate-fade-in" key={currentIdx}>
-        <StepComponent
-          progress={progress}
-          onNext={goNext}
-          onBack={currentIdx > 0 ? goBack : null}
-          user={user}
-          refreshUser={refreshUser}
-        />
-      </div>
+      {/* Custom Minimal Footer */}
+      <footer className="py-6 mt-auto">
+        <p className="text-center text-xs text-[#6B7280]">
+          © {new Date().getFullYear()} CampusConnect. All rights reserved.
+        </p>
+      </footer>
     </div>
   );
 }

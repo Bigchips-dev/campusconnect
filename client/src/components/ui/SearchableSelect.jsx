@@ -29,7 +29,7 @@ export default function SearchableSelect({
   return (
     <div className={`space-y-1.5 ${className}`} ref={ref}>
       {label && (
-        <label className="block text-sm font-medium" style={{ color: 'var(--text-heading)' }}>
+        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">
           {label}
         </label>
       )}
@@ -37,44 +37,27 @@ export default function SearchableSelect({
       <button
         type="button"
         onClick={() => { setOpen(!open); setQuery(''); }}
-        className={[
-          'w-full flex items-center justify-between rounded-xl border px-4 py-2.5 text-sm text-left cursor-pointer',
-          'transition-all duration-200',
-          error
-            ? 'border-error-500 focus:ring-error-500/25'
-            : 'border-[var(--border-default)] hover:border-[var(--border-strong)]',
-          open ? 'ring-2 ring-[var(--ring-focus)] border-primary-500' : '',
-        ].join(' ')}
-        style={{ backgroundColor: 'var(--bg-surface)', color: value ? 'var(--text-body)' : 'var(--text-faint)' }}
+        className={`w-full flex items-center justify-between px-4 py-3 bg-white border ${
+          error ? 'border-red-500' : open ? 'border-[#0A0A0A] ring-1 ring-[#F59E0B]' : 'border-[#E5E7EB]'
+        } rounded-lg text-sm transition-all focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]`}
       >
-        <span className="truncate">{value || placeholder}</span>
-        <ChevronDown
-          className={`w-4 h-4 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}
-          style={{ color: 'var(--text-muted)' }}
-        />
+        <span className={`truncate ${value ? 'text-[#0A0A0A]' : 'text-[#6B7280]'}`}>{value || placeholder}</span>
+        <ChevronDown className={`w-4 h-4 flex-shrink-0 text-[#6B7280] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div
-          className="absolute z-50 mt-1 w-full max-h-64 rounded-xl border shadow-xl overflow-hidden animate-fade-in"
-          style={{
-            backgroundColor: 'var(--bg-surface)',
-            borderColor: 'var(--border-default)',
-            position: 'relative',
-          }}
-        >
+        <div className="absolute z-50 mt-1 w-full max-h-64 rounded-xl border border-[#E5E7EB] bg-white shadow-xl overflow-hidden animate-fade-in relative">
           {/* Search input */}
-          <div className="sticky top-0 p-2 border-b" style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--bg-surface)' }}>
+          <div className="sticky top-0 p-2 border-b border-[#E5E7EB] bg-white">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-faint)' }} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search…"
                 autoFocus
-                className="w-full pl-9 pr-3 py-2 rounded-lg text-sm border-none outline-none"
-                style={{ backgroundColor: 'var(--bg-muted)', color: 'var(--text-body)' }}
+                className="w-full pl-9 pr-3 py-2 rounded-lg text-sm bg-[#FAFAFA] text-[#0A0A0A] border-none outline-none"
               />
             </div>
           </div>
@@ -82,21 +65,19 @@ export default function SearchableSelect({
           {/* Options */}
           <div className="max-h-48 overflow-y-auto">
             {filtered.length === 0 ? (
-              <p className="px-4 py-3 text-sm" style={{ color: 'var(--text-faint)' }}>No results</p>
+              <p className="px-4 py-3 text-sm text-[#6B7280]">No results</p>
             ) : (
               filtered.map((opt) => (
                 <button
                   key={opt}
                   type="button"
                   onClick={() => { onChange(opt); setOpen(false); }}
-                  className={[
-                    'w-full flex items-center justify-between px-4 py-2.5 text-sm text-left cursor-pointer',
-                    'transition-colors hover:bg-[var(--bg-muted)]',
-                  ].join(' ')}
-                  style={{ color: opt === value ? 'var(--color-primary-500)' : 'var(--text-body)' }}
+                  className={`w-full flex items-center justify-between px-4 py-2.5 text-sm text-left cursor-pointer transition-colors hover:bg-[#FAFAFA] ${
+                    opt === value ? 'text-[#F59E0B] font-medium' : 'text-[#0A0A0A]'
+                  }`}
                 >
                   {opt}
-                  {opt === value && <Check className="w-4 h-4 text-primary-500" />}
+                  {opt === value && <Check className="w-4 h-4 text-[#F59E0B]" />}
                 </button>
               ))
             )}
@@ -104,12 +85,7 @@ export default function SearchableSelect({
         </div>
       )}
 
-      {error && (
-        <p className="text-xs text-error-500 flex items-center gap-1">
-          <span className="inline-block w-1 h-1 rounded-full bg-error-500" />
-          {error}
-        </p>
-      )}
+      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   );
 }

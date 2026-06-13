@@ -27,77 +27,64 @@ export default function StepComplete({ user, refreshUser }) {
   };
 
   return (
-    <div className="flex flex-col items-center text-center py-8 space-y-8 animate-fade-in">
+    <div className="flex flex-col items-center text-center py-12 space-y-8 animate-fade-in w-full max-w-sm mx-auto">
       {/* Celebration icon */}
-      <div className="relative">
-        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-xl shadow-primary-500/25">
-          <PartyPopper className="w-12 h-12 text-white" />
-        </div>
-        <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-accent-400 flex items-center justify-center shadow-lg animate-bounce">
-          <Sparkles className="w-5 h-5 text-navy-950" />
-        </div>
+      <div className="w-24 h-24 rounded-full flex items-center justify-center bg-[#F59E0B]/10 border-4 border-[#F59E0B]">
+        <CheckCircle2 className="w-12 h-12 text-[#F59E0B]" />
       </div>
 
       {/* Headline */}
       <div>
-        <h1 className="heading-3xl mb-2">
-          You're all set, <span className="gradient-text">{user?.firstName}!</span> 🎉
+        <h1 className="text-3xl font-bold text-[#0A0A0A] mb-2">
+          You're all set, {user?.firstName}!
         </h1>
-        <p className="text-base" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-[#6B7280]">
           Your CampusConnect profile is ready to go.
         </p>
       </div>
 
-      {/* Summary */}
-      <div className="w-full max-w-sm space-y-3 text-left">
-        <div className="surface rounded-xl p-4 flex items-center gap-3">
-          <CheckCircle2 className="w-5 h-5 text-success-500 flex-shrink-0" />
-          <span className="text-sm" style={{ color: 'var(--text-body)' }}>Profile information completed</span>
+      {/* Summary Checklist */}
+      <div className="w-full space-y-3 text-left">
+        <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3">
+          <CheckCircle2 className="w-5 h-5 text-[#F59E0B] flex-shrink-0" />
+          <span className="text-sm font-medium text-[#0A0A0A]">Profile information completed</span>
         </div>
         {isSeeker && (
-          <div className="surface rounded-xl p-4 flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 text-success-500 flex-shrink-0" />
-            <span className="text-sm" style={{ color: 'var(--text-body)' }}>Service interests selected</span>
+          <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3">
+            <CheckCircle2 className="w-5 h-5 text-[#F59E0B] flex-shrink-0" />
+            <span className="text-sm font-medium text-[#0A0A0A]">Service interests selected</span>
           </div>
         )}
         {isProvider && (
-          <div className="surface rounded-xl p-4 flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 text-success-500 flex-shrink-0" />
-            <span className="text-sm" style={{ color: 'var(--text-body)' }}>Service skills configured</span>
+          <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3">
+            <CheckCircle2 className="w-5 h-5 text-[#F59E0B] flex-shrink-0" />
+            <span className="text-sm font-medium text-[#0A0A0A]">Service skills configured</span>
           </div>
         )}
-        <div className="surface rounded-xl p-4 flex items-center gap-3">
-          <CheckCircle2 className="w-5 h-5 text-success-500 flex-shrink-0" />
-          <div>
-            <span className="text-sm" style={{ color: 'var(--text-body)' }}>
-              Roles: {user?.activeRoles?.map((r) => r === 'SEEKER' ? 'Service Seeker' : 'Service Provider').join(' & ')}
-            </span>
-          </div>
-        </div>
       </div>
 
       {/* CTAs */}
-      <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm pt-2">
+      <div className="flex flex-col gap-3 w-full pt-4">
         {isSeeker && (
-          <Button
-            variant="primary"
-            size="lg"
-            className="flex-1"
+          <button
             onClick={() => handleFinish('/services')}
-            loading={loading}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 py-4 bg-[#0A0A0A] text-white rounded-xl font-bold transition-colors hover:bg-[#F59E0B] hover:text-[#0A0A0A] disabled:opacity-50"
           >
-            <Search className="w-4 h-4" /> Explore Services
-          </Button>
+            {loading ? 'Finishing...' : 'Explore Services'}
+          </button>
         )}
-        <Button
-          variant={isSeeker ? 'secondary' : 'primary'}
-          size="lg"
-          className="flex-1"
+        <button
           onClick={() => handleFinish('/dashboard')}
-          loading={loading}
+          disabled={loading}
+          className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold transition-colors disabled:opacity-50 ${
+            isSeeker
+              ? 'bg-white text-[#0A0A0A] border border-[#0A0A0A] hover:bg-[#F59E0B] hover:border-[#F59E0B]'
+              : 'bg-[#0A0A0A] text-white hover:bg-[#F59E0B] hover:text-[#0A0A0A]'
+          }`}
         >
-          <LayoutDashboard className="w-4 h-4" /> View Dashboard
-        </Button>
+          {loading ? 'Finishing...' : 'View Dashboard'}
+        </button>
       </div>
     </div>
   );

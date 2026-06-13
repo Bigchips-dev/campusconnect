@@ -41,59 +41,73 @@ export default function StepProfile({ progress, onNext, user }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 w-full">
+      {/* Header */}
+      <div>
+        <h2 className="text-3xl font-bold text-[#0A0A0A] mb-2">Tell us about you.</h2>
+        <p className="text-[#6B7280]">Help others know who they are connecting with.</p>
+      </div>
+
       {errors.submit && (
-        <div className="p-3 rounded-xl bg-error-50 dark:bg-error-700/10 border border-error-200 dark:border-error-700/30 text-sm text-error-600 dark:text-error-400">{errors.submit}</div>
+        <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-600">
+          {errors.submit}
+        </div>
       )}
 
       {/* Profile photo */}
-      <div className="flex items-center gap-5">
-        <div className="relative">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-4">
           {form.avatarUrl ? (
-            <img src={form.avatarUrl} alt="Avatar" className="w-20 h-20 rounded-full object-cover ring-3 ring-[var(--border-default)]" />
+            <img src={form.avatarUrl} alt="Avatar" className="w-24 h-24 rounded-full object-cover border border-[#E5E7EB]" />
           ) : (
-            <div className="w-20 h-20 rounded-full bg-primary-100 dark:bg-primary-950/40 flex items-center justify-center ring-3 ring-[var(--border-default)]">
-              <Camera className="w-7 h-7 text-primary-400" />
+            <div className="w-24 h-24 rounded-full bg-[#FAFAFA] flex flex-col items-center justify-center border border-[#E5E7EB]">
+              <Camera className="w-6 h-6 text-[#F59E0B] mb-1" />
+              <span className="text-[10px] text-[#6B7280]">Upload photo</span>
             </div>
           )}
         </div>
-        <div className="flex-1">
-          <Input
-            label="Profile Photo URL (optional)"
+        <div className="w-full">
+          <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Profile Photo URL (optional)</label>
+          <input
+            type="text"
             placeholder="https://example.com/photo.jpg"
             value={form.avatarUrl}
             onChange={(e) => setForm({ ...form, avatarUrl: e.target.value })}
+            className="w-full px-4 py-3 bg-white border border-[#E5E7EB] rounded-lg text-sm transition-all focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]"
           />
         </div>
       </div>
 
       {/* Phone */}
-      <Input
-        label="Phone Number"
-        icon={Phone}
-        placeholder="+234 800 000 0000"
-        value={form.phone}
-        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-        error={errors.phone}
-        required
-      />
+      <div>
+        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Phone Number</label>
+        <div className="relative">
+          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
+          <input
+            type="text"
+            placeholder="+234 800 000 0000"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            className={`w-full pl-10 pr-4 py-3 bg-white border ${errors.phone ? 'border-red-500' : 'border-[#E5E7EB]'} rounded-lg text-sm transition-all focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]`}
+          />
+        </div>
+        {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
+      </div>
 
       {/* Gender */}
       <div>
-        <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-heading)' }}>Gender</label>
+        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Gender</label>
         <div className="flex gap-3">
           {GENDERS.map((g) => (
             <button
               key={g.value}
               type="button"
               onClick={() => setForm({ ...form, gender: g.value })}
-              className={[
-                'flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all cursor-pointer',
+              className={`flex-1 py-3 rounded-full text-sm font-medium border transition-all ${
                 form.gender === g.value
-                  ? 'bg-primary-50 dark:bg-primary-950/30 border-primary-500 text-primary-600 dark:text-primary-300'
-                  : 'border-[var(--border-default)] hover:border-[var(--border-strong)]',
-              ].join(' ')}
-              style={form.gender !== g.value ? { color: 'var(--text-muted)' } : undefined}
+                  ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
+                  : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#0A0A0A]'
+              }`}
             >
               {g.label}
             </button>
@@ -101,32 +115,35 @@ export default function StepProfile({ progress, onNext, user }) {
         </div>
       </div>
 
-      {/* Faculty — searchable dropdown */}
-      <SearchableSelect
-        label="Faculty"
-        options={FACULTIES}
-        value={form.faculty}
-        onChange={(val) => setForm({ ...form, faculty: val })}
-        placeholder="Search your faculty…"
-        error={errors.faculty}
-      />
+      {/* Faculty */}
+      <div>
+        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Faculty</label>
+        <SearchableSelect
+          options={FACULTIES}
+          value={form.faculty}
+          onChange={(val) => setForm({ ...form, faculty: val })}
+          placeholder="Search your faculty…"
+          error={errors.faculty}
+        />
+        {/* Note: I'm leaving SearchableSelect intact but we will redesign its internals if needed, 
+            though the prompt says "If changes need to be made in shared components... make them".
+            We'll update SearchableSelect next. */}
+      </div>
 
       {/* Level */}
       <div>
-        <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-heading)' }}>Level</label>
-        <div className="flex flex-wrap gap-2">
+        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Level</label>
+        <div className="flex flex-wrap gap-3">
           {LEVELS.map((lvl) => (
             <button
               key={lvl}
               type="button"
               onClick={() => setForm({ ...form, level: lvl })}
-              className={[
-                'px-4 py-2 rounded-xl text-sm font-medium border transition-all cursor-pointer',
+              className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all ${
                 form.level === lvl
-                  ? 'bg-primary-50 dark:bg-primary-950/30 border-primary-500 text-primary-600 dark:text-primary-300'
-                  : 'border-[var(--border-default)] hover:border-[var(--border-strong)]',
-              ].join(' ')}
-              style={form.level !== lvl ? { color: 'var(--text-muted)' } : undefined}
+                  ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
+                  : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#0A0A0A]'
+              }`}
             >
               {lvl}
             </button>
@@ -135,25 +152,29 @@ export default function StepProfile({ progress, onNext, user }) {
       </div>
 
       {/* Bio */}
-      <div className="space-y-1.5">
-        <label className="block text-sm font-medium" style={{ color: 'var(--text-heading)' }}>Short Bio (optional)</label>
+      <div>
+        <label className="block text-sm font-bold text-[#0A0A0A] mb-2">Short Bio (optional)</label>
         <textarea
           rows={3}
           placeholder="Tell others a bit about yourself…"
           value={form.bio}
           onChange={(e) => setForm({ ...form, bio: e.target.value })}
           maxLength={300}
-          className="w-full px-4 py-2.5 rounded-xl border text-sm transition-all duration-200 resize-none focus:outline-none focus:ring-2 focus:border-primary-500 focus:ring-[var(--ring-focus)]"
-          style={{ backgroundColor: 'var(--bg-surface)', color: 'var(--text-body)', borderColor: 'var(--border-default)' }}
+          className="w-full px-4 py-3 bg-white border border-[#E5E7EB] rounded-lg text-sm transition-all focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B] resize-none"
         />
-        <p className="text-xs text-right" style={{ color: 'var(--text-faint)' }}>{form.bio.length}/300</p>
+        <p className="text-xs text-[#6B7280] text-right mt-1">{form.bio.length}/300</p>
       </div>
 
       {/* Next button */}
-      <div className="flex justify-end pt-4">
-        <Button onClick={handleSubmit} size="lg" loading={loading}>
-          Continue <ArrowRight className="w-4 h-4" />
-        </Button>
+      <div className="pt-4">
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-2 py-4 bg-[#0A0A0A] text-white rounded-xl font-bold transition-colors hover:bg-[#F59E0B] hover:text-[#0A0A0A] disabled:opacity-50"
+        >
+          {loading ? 'Saving...' : 'Continue'}
+          {!loading && <ArrowRight className="w-5 h-5" />}
+        </button>
       </div>
     </div>
   );

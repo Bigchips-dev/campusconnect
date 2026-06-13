@@ -33,24 +33,24 @@ export default function StepComplete({ user, refreshUser }) {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center h-full min-h-[70vh] gap-10 w-full max-w-md mx-auto pb-10">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] text-center py-[40px] px-[20px] w-full">
       {/* Icon */}
-      <div className="w-24 h-24 rounded-full bg-[#F59E0B] flex items-center justify-center big-bounce-scale mb-2">
-        <Check className="w-12 h-12 text-white" strokeWidth={3} />
+      <div className="w-[80px] h-[80px] mb-[32px] rounded-full bg-[#F59E0B] flex items-center justify-center big-bounce-scale">
+        <Check className="w-[40px] h-[40px] text-white" strokeWidth={3} />
       </div>
 
       {/* Header */}
-      <div className="text-center mb-2">
-        <h2 className="text-[2.5rem] md:text-[3rem] font-[800] leading-[1.1] text-[#0A0A0A] mb-4 tracking-tight animate-step-heading" style={{ animationDelay: '400ms' }}>
+      <div className="w-full">
+        <h2 className="text-[3rem] font-[800] text-[#0A0A0A] mb-[8px] animate-step-heading" style={{ animationDelay: '400ms' }}>
           You're all set, {user?.firstName || 'Big'}!
         </h2>
-        <p className="text-base font-normal text-[#6B7280] animate-step-subheading" style={{ animationDelay: '500ms' }}>
+        <p className="text-[1rem] text-[#6B7280] mb-[32px] animate-step-subheading" style={{ animationDelay: '500ms' }}>
           Your profile is ready. Here's what you can do next:
         </p>
       </div>
 
       {/* Checklist */}
-      <div className="w-full space-y-4 text-left mt-2">
+      <div className="w-full max-w-[400px] mb-[40px] flex flex-col gap-[12px] text-left">
         {checklist.map((item, index) => {
           const Icon = item.icon;
           const delay = 600 + index * 100;
@@ -66,16 +66,16 @@ export default function StepComplete({ user, refreshUser }) {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col items-center w-full gap-4 pt-10 animate-step-btn" style={{ animationDelay: '900ms' }}>
+      <div className="flex flex-col items-center gap-[16px] w-full animate-step-btn" style={{ animationDelay: '900ms' }}>
         <button
           onClick={() => handleFinish('/dashboard')}
-          className="w-[280px] py-4 bg-[#0A0A0A] text-white rounded-lg font-bold transition-all duration-200 hover:bg-[#F59E0B] hover:text-[#0A0A0A] active:scale-[0.98]"
+          className="w-[280px] py-[14px] px-[24px] bg-[#0A0A0A] text-white border-none rounded-[8px] text-[1rem] font-[600] cursor-pointer transition-all duration-200 hover:bg-[#F59E0B] hover:text-[#0A0A0A] active:scale-[0.98]"
         >
           Go to Dashboard
         </button>
         <button
           onClick={() => handleFinish('/services')}
-          className="w-[280px] py-4 bg-white border border-[#0A0A0A] text-[#0A0A0A] rounded-lg font-bold transition-all duration-200 hover:bg-[#FAFAFA] active:scale-[0.98]"
+          className="w-[280px] py-[14px] px-[24px] bg-white text-[#0A0A0A] border-2 border-[#0A0A0A] rounded-[8px] text-[1rem] font-[600] cursor-pointer transition-all duration-200 hover:bg-[#FAFAFA] active:scale-[0.98]"
         >
           Explore Services
         </button>

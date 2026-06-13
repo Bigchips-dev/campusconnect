@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  PROVIDER
+  SEEKER
+}
+
+enum ServiceCategory {
+  ACADEMIC_TUTORING
+  FOOD_CATERING
+  BEAUTY_GROOMING
+  TECH_DIGITAL
+  FASHION_CLOTHING
+  HOME_REPAIR
+  HEALTH_WELLNESS
+  CREATIVE_ARTS
+  LOGISTICS_ERRANDS
+  SPIRITUAL_CULTURAL
+  WRITING_HELP
+  PHONE_LAPTOP_REPAIR
+  RESEARCH_STUDY_HELP
+  SPORTS_FITNESS
+  HOUSING_CAMPUS_LIFE
+  PRINTING_MEDIA
+  BUY_SELL_RENT
+  CAREER_SELF_GROWTH
+}
+
+enum PricingType {
+  HOURLY
+  FIXED
+  FREE
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+// ─── Rich category metadata stored in DB ────────────────────────
+model Category {
+  id                String   @id                   // slug e.g. "ACADEMIC_TUTORING"
+  name              String
+  icon              String                         // Lucide icon name
+  color             String                         // hex
+  description       String
+  isVirtualEligible Boolean  @default(false)
+  sortOrder         Int      @default(0)
+  createdAt         DateTime @default(now())
+
+  subcategories Subcategory[]
+
+  @@map("categories")
+}
+
+model Subcategory {
+  id         String   @id @default(uuid())
+  name       String
+  categoryId String
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@map("subcategories")
+}
+
+// ─── Core models ────────────────────────────────────────────────
+model User {
+  id                 String   @id @default(uuid())
+  email              String   @unique
+  passwordHash       String
+  firstName          String
+  lastName           String
+  university         String?
+  phone              String?
+  gender             String?
+  faculty            String?
+  level              String?
+  avatarUrl          String?
+  bio                String?
+  activeRoles        Role[]   @default([SEEKER])
+  interests          String[] @default([])
+
+  onboardingComplete Boolean  @default(false)
+  onboardingStep     Int      @default(0)
+
+  emailVerified      Boolean  @default(false)
+  verificationToken  String?  @unique
+  resetToken         String?  @unique
+  resetTokenExpiry   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  services       Service[]
+  bookings       Booking[]
+  reviews        Review[]
+  providerSkills ProviderSkill[]
+  seekerConversations   Conversation[] @relation("SeekerConversations")
+  providerConversations Conversation[] @relation("ProviderConversations")
+  sentMessages          Message[]
+
+  @@map("users")
+}
+
+model ProviderSkill {
+  id            String      @id @default(uuid())
+  userId        String
+  category      String
+  subcategory   String
+  description   String?
+  pricingType   PricingType @default(FIXED)
+  experience    Int         @default(0)
+  portfolioUrls String[]   @default([])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("provider_skills")
+}
+
+model Service {
+  id          String          @id @default(uuid())
+  title       String
+  description String
+  category    ServiceCategory
+  price       Decimal         @db.Decimal(10, 2)
+  pricingType PricingType     @default(FIXED)
+  imageUrl    String?
+  isActive    Boolean         @default(true)
+  providerId  String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  provider User      @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+  reviews  Review[]
+
+  @@index([category])
+  @@index([providerId])
+  @@map("services")
+}
+
+model Booking {
+  id          String        @id @default(uuid())
+  serviceId   String
+  seekerId    String
+  status      BookingStatus @default(PENDING)
+  message     String?
+  scheduledAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  seeker  User    @relation(fields: [seekerId], references: [id], onDelete: Cascade)
+
+  @@index([serviceId])
+  @@index([seekerId])
+  @@map("bookings")
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  rating     Int
+  comment    String?
+  serviceId  String
+  reviewerId String
+  createdAt  DateTime @default(now())
+
+  service  Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  reviewer User    @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  @@unique([serviceId, reviewerId])
+  @@index([serviceId])
+  @@map("reviews")
+}
+
+model Conversation {
+  id         String   @id @default(uuid())
+  bookingId  String?
+  seekerId   String
+  providerId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  seeker   User @relation("SeekerConversations", fields: [seekerId], references: [id], onDelete: Cascade)
+  provider User @relation("ProviderConversations", fields: [providerId], references: [id], onDelete: Cascade)
+
+  messages Message[]
+
+  @@unique([seekerId, providerId])
+  @@index([seekerId])
+  @@index([providerId])
+  @@map("conversations")
+}
+
+model Message {
+  id             String   @id @default(uuid())
+  conversationId String
+  senderId       String
+  content        String
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@map("messages")
+}

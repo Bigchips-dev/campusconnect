@@ -139,6 +139,7 @@ async function getServiceById(req, res, next) {
 
 async function createService(req, res, next) {
   try {
+    console.log('Incoming POST /services payload:', req.body);
     const { title, description, category, price, pricingType, imageUrl } = req.body;
 
     const service = await prisma.service.create({

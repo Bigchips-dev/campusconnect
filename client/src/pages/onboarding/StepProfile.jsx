@@ -276,10 +276,15 @@ export default function StepProfile({ onNext, onBack, user, setStepProgress }) {
     }
   };
 
-  // Auto-advance for gender & level pill selection
-  const selectAndAdvance = (field, value) => {
-    setForm((f) => ({ ...f, [field]: value }));
-    setTimeout(() => advance(), 160);
+  // Handle pill selections
+  const handleGenderClick = (value) => {
+    setForm((f) => ({ ...f, gender: value }));
+    if (value) setError('');
+  };
+
+  const handleLevelClick = (value) => {
+    setForm((f) => ({ ...f, level: value }));
+    if (value) setError('');
   };
 
   const renderInput = () => {
@@ -307,7 +312,7 @@ export default function StepProfile({ onNext, onBack, user, setStepProgress }) {
             {(GENDERS || [{ value: 'Male', label: 'Male' }, { value: 'Female', label: 'Female' }, { value: 'PREFER_NOT_TO_SAY', label: 'Prefer not to say' }]).map((g) => (
               <button
                 key={g.value}
-                onClick={() => selectAndAdvance('gender', g.value)}
+                onClick={() => handleGenderClick(g.value)}
                 style={{
                   width: '100%',
                   padding: '14px 20px',
@@ -344,7 +349,7 @@ export default function StepProfile({ onNext, onBack, user, setStepProgress }) {
                 key={lvl}
                 label={lvl}
                 active={form.level === lvl}
-                onClick={() => selectAndAdvance('level', lvl)}
+                onClick={() => handleLevelClick(lvl)}
               />
             ))}
           </div>
@@ -442,15 +447,12 @@ export default function StepProfile({ onNext, onBack, user, setStepProgress }) {
 
       {/* Buttons */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {/* Hide OK for gender (Q2) and level (Q4) — they auto-advance on selection */}
-        {currentQIdx !== 2 && currentQIdx !== 4 && (
-          <OKButton
-            onClick={() => advance()}
-            disabled={loading}
-            isLast={isLastQ}
-            loading={loading}
-          />
-        )}
+        <OKButton
+          onClick={() => advance()}
+          disabled={loading}
+          isLast={isLastQ}
+          loading={loading}
+        />
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '4px' }}>
           {/* Back link */}

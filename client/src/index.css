@@ -835,3 +835,13 @@ body {
 .animate-typeform-enter {
   animation: slideUpFadeIn 300ms ease-out forwards;
 }
+
+/* Back-direction: slide down from above */
+@keyframes slideDownFadeIn {
+  from { opacity: 0; transform: translateY(-28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-typeform-enter-down {
+  animation: slideDownFadeIn 300ms ease-out forwards;
+}

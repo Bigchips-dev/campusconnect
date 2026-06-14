@@ -1,24 +1,225 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from '../../lib/api';
 import SearchableSelect from '../../components/ui/SearchableSelect';
 import { FACULTIES, LEVELS, GENDERS } from '../../data/categories';
 import { Camera, ArrowRight, ArrowLeft } from 'lucide-react';
 
-export default function StepProfile({ progress, onNext, user, setStepProgress }) {
-  const saved = progress?.profile || {};
+// ─── Shared input / button styles ───────────────────────────────────────────
+const INPUT_CLS =
+  'w-full h-[52px] px-[16px] py-[14px] text-[1rem] bg-white border border-[#E5E7EB] rounded-[8px] outline-none transition-all duration-200';
+const INPUT_FOCUS_STYLE = {
+  borderColor: '#0A0A0A',
+  boxShadow: '0 0 0 3px rgba(245,158,11,0.15)',
+};
+
+function OKButton({ onClick, disabled, isLast, loading }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '6px',
+        height: '44px',
+        width: isLast ? '140px' : '120px',
+        borderRadius: '8px',
+        fontWeight: 700,
+        fontSize: '0.9375rem',
+        border: 'none',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        background: isLast ? '#F59E0B' : '#0A0A0A',
+        color: isLast ? '#0A0A0A' : '#fff',
+        opacity: disabled ? 0.5 : 1,
+        transition: 'background 0.2s, color 0.2s, opacity 0.2s',
+      }}
+      onMouseEnter={(e) => {
+        if (!disabled) {
+          e.currentTarget.style.background = isLast ? '#d97706' : '#F59E0B';
+          e.currentTarget.style.color = '#0A0A0A';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!disabled) {
+          e.currentTarget.style.background = isLast ? '#F59E0B' : '#0A0A0A';
+          e.currentTarget.style.color = isLast ? '#0A0A0A' : '#fff';
+        }
+      }}
+    >
+      {loading ? '…' : isLast ? 'Continue' : 'OK'}
+      {!loading && <ArrowRight size={16} />}
+    </button>
+  );
+}
+
+function BackLink({ onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '4px',
+        fontSize: '0.875rem',
+        fontWeight: 500,
+        color: '#6B7280',
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        padding: 0,
+        transition: 'color 0.15s',
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.color = '#0A0A0A')}
+      onMouseLeave={(e) => (e.currentTarget.style.color = '#6B7280')}
+    >
+      <ArrowLeft size={14} /> Back
+    </button>
+  );
+}
+
+function SkipLink({ onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        fontSize: '0.875rem',
+        fontWeight: 500,
+        color: '#6B7280',
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        padding: 0,
+        transition: 'color 0.15s',
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.color = '#0A0A0A')}
+      onMouseLeave={(e) => (e.currentTarget.style.color = '#6B7280')}
+    >
+      Skip for now
+    </button>
+  );
+}
+
+// ─── Animated question wrapper ───────────────────────────────────────────────
+function QuestionSlide({ children, direction }) {
+  const [cls, setCls] = useState(
+    direction === 'back' ? 'animate-typeform-enter-down' : 'animate-typeform-enter'
+  );
+
+  useEffect(() => {
+    setCls(direction === 'back' ? 'animate-typeform-enter-down' : 'animate-typeform-enter');
+  }, [direction, children]);
+
+  return <div className={`w-full flex flex-col ${cls}`}>{children}</div>;
+}
+
+// ─── Question number badge ───────────────────────────────────────────────────
+function QNum({ n }) {
+  return (
+    <div
+      style={{
+        fontSize: '0.8125rem',
+        fontWeight: 700,
+        color: '#6B7280',
+        marginBottom: '16px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4px',
+      }}
+    >
+      {String(n).padStart(2, '0')} <ArrowRight size={14} style={{ display: 'inline' }} />
+    </div>
+  );
+}
+
+// ─── Question heading ────────────────────────────────────────────────────────
+function QTitle({ children, subtitle }) {
+  return (
+    <>
+      <h2
+        style={{
+          fontSize: '1.75rem',
+          fontWeight: 700,
+          color: '#0A0A0A',
+          lineHeight: 1.25,
+          marginBottom: subtitle ? '8px' : '24px',
+        }}
+      >
+        {children}
+      </h2>
+      {subtitle && (
+        <p style={{ fontSize: '1rem', color: '#6B7280', marginBottom: '24px' }}>{subtitle}</p>
+      )}
+    </>
+  );
+}
+
+// ─── Focus-managed text input ─────────────────────────────────────────────────
+function TFInput({ value, onChange, onSubmit, placeholder, readOnly, type = 'text' }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!readOnly && ref.current) ref.current.focus();
+  }, [readOnly]);
+
+  return (
+    <input
+      ref={ref}
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      readOnly={readOnly}
+      onChange={onChange}
+      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSubmit?.(); } }}
+      className={INPUT_CLS}
+      style={readOnly ? { background: '#F9FAFB' } : {}}
+      onFocus={(e) => Object.assign(e.target.style, INPUT_FOCUS_STYLE)}
+      onBlur={(e) => { e.target.style.borderColor = '#E5E7EB'; e.target.style.boxShadow = 'none'; }}
+    />
+  );
+}
+
+// ─── Pill button (gender / level) ─────────────────────────────────────────────
+function PillBtn({ label, active, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        padding: '10px 22px',
+        borderRadius: '9999px',
+        border: active ? '2px solid #0A0A0A' : '1.5px solid #E5E7EB',
+        background: active ? '#0A0A0A' : '#fff',
+        color: active ? '#fff' : '#0A0A0A',
+        fontWeight: 600,
+        fontSize: '0.9375rem',
+        cursor: 'pointer',
+        transition: 'all 0.15s',
+      }}
+      onMouseEnter={(e) => { if (!active) e.currentTarget.style.borderColor = '#0A0A0A'; }}
+      onMouseLeave={(e) => { if (!active) e.currentTarget.style.borderColor = '#E5E7EB'; }}
+    >
+      {label}
+    </button>
+  );
+}
+
+export default function StepProfile({ onNext, onBack, user, setStepProgress }) {
   const [form, setForm] = useState({
-    phone: saved.phone || '',
-    gender: saved.gender || '',
-    faculty: saved.faculty || '',
-    level: saved.level || '',
-    bio: saved.bio || '',
-    avatarUrl: saved.avatarUrl || '',
+    phone: '',
+    gender: '',
+    faculty: '',
+    level: '',
+    bio: '',
+    avatarUrl: '',
   });
+
   const [currentQIdx, setCurrentQIdx] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [isAnimating, setIsAnimating] = useState(false);
-  
+  const [direction, setDirection] = useState('forward');
+  const [slideKey, setSlideKey] = useState(0);
+
   const totalQuestions = 7;
 
   useEffect(() => {
@@ -27,43 +228,40 @@ export default function StepProfile({ progress, onNext, user, setStepProgress })
     }
   }, [currentQIdx, setStepProgress]);
 
-  const questions = [
-    { id: 'name', type: 'name', title: "What's your name?", subtitle: "Confirm the name you signed up with." },
-    { id: 'phone', type: 'phone', title: "What's your phone number?" },
-    { id: 'gender', type: 'gender', title: "What's your gender?" },
-    { id: 'faculty', type: 'faculty', title: "Which faculty are you in?" },
-    { id: 'level', type: 'level', title: "What level are you?" },
-    { id: 'avatarUrl', type: 'avatar', title: "Add a profile photo (optional)" },
-    { id: 'bio', type: 'bio', title: "Tell us about yourself (optional)" }
-  ];
+  const isOptional = currentQIdx === 5 || currentQIdx === 6;
+  const isLastQ = currentQIdx === totalQuestions - 1;
 
-  const goNextQ = () => {
-    if (currentQIdx === 1 && !form.phone.trim()) { setError('Please enter a phone number'); return; }
-    if (currentQIdx === 2 && !form.gender) { setError('Please select your gender'); return; }
-    if (currentQIdx === 3 && !form.faculty) { setError('Please select your faculty'); return; }
-    if (currentQIdx === 4 && !form.level) { setError('Please select your level'); return; }
+  const validate = () => {
+    if (currentQIdx === 1 && !form.phone.trim()) return 'Please enter your phone number';
+    if (currentQIdx === 2 && !form.gender) return 'Please select your gender';
+    if (currentQIdx === 3 && !form.faculty) return 'Please select your faculty';
+    if (currentQIdx === 4 && !form.level) return 'Please select your level';
+    return null;
+  };
 
+  const advance = (skip = false) => {
+    if (!skip) {
+      const err = validate();
+      if (err) { setError(err); return; }
+    }
     setError('');
-    
-    if (currentQIdx < totalQuestions - 1) {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentQIdx(prev => prev + 1);
-        setIsAnimating(false);
-      }, 300);
-    } else {
+    if (isLastQ) {
       handleSubmit();
+    } else {
+      setDirection('forward');
+      setSlideKey((k) => k + 1);
+      setCurrentQIdx((i) => i + 1);
     }
   };
 
-  const goPrevQ = () => {
+  const retreat = () => {
     setError('');
     if (currentQIdx > 0) {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentQIdx(prev => prev - 1);
-        setIsAnimating(false);
-      }, 300);
+      setDirection('back');
+      setSlideKey((k) => k + 1);
+      setCurrentQIdx((i) => i - 1);
+    } else {
+      onBack?.();
     }
   };
 
@@ -73,180 +271,194 @@ export default function StepProfile({ progress, onNext, user, setStepProgress })
       await api.put('/onboarding/profile', form);
       onNext();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save');
+      setError(err.response?.data?.message || 'Failed to save. Please try again.');
       setLoading(false);
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      goNextQ();
-    }
+  // Auto-advance for gender & level pill selection
+  const selectAndAdvance = (field, value) => {
+    setForm((f) => ({ ...f, [field]: value }));
+    setTimeout(() => advance(), 160);
   };
 
-  const renderInput = (q) => {
-    switch (q.type) {
-      case 'name':
+  const renderInput = () => {
+    switch (currentQIdx) {
+      case 0:
         return (
-          <input
-            type="text"
-            readOnly
+          <TFInput
             value={`${user?.firstName || ''} ${user?.lastName || ''}`.trim()}
-            className="w-full h-[52px] px-[16px] py-[14px] text-[1rem] bg-gray-50 border border-[#E5E7EB] rounded-[8px] text-[#0A0A0A]"
+            readOnly
           />
         );
-      case 'phone':
+      case 1:
         return (
-          <input
-            type="text"
-            placeholder="e.g. 08012345678"
+          <TFInput
             value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            onKeyDown={handleKeyDown}
-            autoFocus
-            className="w-full h-[52px] px-[16px] py-[14px] text-[1rem] bg-white border border-[#E5E7EB] rounded-[8px] focus:outline-none focus:border-[#0A0A0A] focus:ring-[3px] focus:ring-opacity-15 focus:ring-[#F59E0B]"
+            onChange={(e) => { setForm((f) => ({ ...f, phone: e.target.value })); setError(''); }}
+            onSubmit={advance}
+            placeholder="e.g. 08012345678"
+            type="text"
           />
         );
-      case 'gender':
+      case 2:
         return (
-          <div className="flex flex-col gap-3">
-            {GENDERS.map((g) => (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {(GENDERS || [{ value: 'Male', label: 'Male' }, { value: 'Female', label: 'Female' }, { value: 'PREFER_NOT_TO_SAY', label: 'Prefer not to say' }]).map((g) => (
               <button
                 key={g.value}
-                onClick={() => { setForm({ ...form, gender: g.value }); setTimeout(goNextQ, 150); }}
-                className={`w-full py-4 px-6 text-left text-[1rem] font-medium rounded-xl border transition-all duration-150 ${
-                  form.gender === g.value
-                    ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
-                    : 'bg-white text-[#0A0A0A] border-[#E5E7EB] hover:border-[#0A0A0A]'
-                }`}
+                onClick={() => selectAndAdvance('gender', g.value)}
+                style={{
+                  width: '100%',
+                  padding: '14px 20px',
+                  textAlign: 'left',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  borderRadius: '10px',
+                  border: form.gender === g.value ? '2px solid #0A0A0A' : '1.5px solid #E5E7EB',
+                  background: form.gender === g.value ? '#0A0A0A' : '#fff',
+                  color: form.gender === g.value ? '#fff' : '#0A0A0A',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
               >
                 {g.label}
               </button>
             ))}
           </div>
         );
-      case 'faculty':
+      case 3:
         return (
-          <div onKeyDown={handleKeyDown}>
-            <SearchableSelect
-              options={FACULTIES}
-              value={form.faculty}
-              onChange={(val) => setForm({ ...form, faculty: val })}
-              placeholder="Search your faculty…"
-            />
-          </div>
+          <SearchableSelect
+            options={FACULTIES}
+            value={form.faculty}
+            onChange={(val) => { setForm((f) => ({ ...f, faculty: val })); setError(''); }}
+            placeholder="Search your faculty…"
+          />
         );
-      case 'level':
+      case 4:
         return (
-          <div className="flex flex-wrap gap-3">
-            {LEVELS.map((lvl) => (
-              <button
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+            {(LEVELS || ['100L', '200L', '300L', '400L', '500L', 'Postgraduate', 'Staff']).map((lvl) => (
+              <PillBtn
                 key={lvl}
-                onClick={() => { setForm({ ...form, level: lvl }); setTimeout(goNextQ, 150); }}
-                className={`px-6 py-3 text-[1rem] font-medium rounded-full border transition-all duration-150 ${
-                  form.level === lvl
-                    ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
-                    : 'bg-white text-[#0A0A0A] border-[#E5E7EB] hover:border-[#0A0A0A]'
-                }`}
-              >
-                {lvl}
-              </button>
+                label={lvl}
+                active={form.level === lvl}
+                onClick={() => selectAndAdvance('level', lvl)}
+              />
             ))}
           </div>
         );
-      case 'avatar':
+      case 5:
         return (
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-4 mb-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Avatar preview */}
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
               {form.avatarUrl ? (
-                <img src={form.avatarUrl} alt="Avatar" className="w-24 h-24 rounded-full object-cover border border-[#E5E7EB]" />
+                <img
+                  src={form.avatarUrl}
+                  alt="Profile preview"
+                  style={{ width: 96, height: 96, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #E5E7EB' }}
+                />
               ) : (
-                <div className="w-24 h-24 rounded-full bg-[#FAFAFA] flex items-center justify-center border border-[#E5E7EB]">
-                  <Camera className="w-8 h-8 text-[#E5E7EB]" />
+                <div
+                  style={{
+                    width: 96,
+                    height: 96,
+                    borderRadius: '50%',
+                    background: '#FAFAFA',
+                    border: '1.5px solid #E5E7EB',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Camera size={32} color="#D1D5DB" />
                 </div>
               )}
             </div>
-            <input
-              type="text"
-              placeholder="https://example.com/photo.jpg"
+            <TFInput
               value={form.avatarUrl}
-              onChange={(e) => setForm({ ...form, avatarUrl: e.target.value })}
-              onKeyDown={handleKeyDown}
-              autoFocus
-              className="w-full h-[52px] px-[16px] py-[14px] text-[1rem] bg-white border border-[#E5E7EB] rounded-[8px] focus:outline-none focus:border-[#0A0A0A] focus:ring-[3px] focus:ring-opacity-15 focus:ring-[#F59E0B]"
+              onChange={(e) => setForm((f) => ({ ...f, avatarUrl: e.target.value }))}
+              onSubmit={advance}
+              placeholder="https://example.com/photo.jpg"
             />
           </div>
         );
-      case 'bio':
+      case 6:
         return (
           <textarea
+            autoFocus
+            rows={4}
             placeholder="Tell us a bit about yourself…"
             value={form.bio}
-            onChange={(e) => setForm({ ...form, bio: e.target.value })}
-            autoFocus
-            className="w-full min-h-[120px] px-[16px] py-[14px] text-[1rem] bg-white border border-[#E5E7EB] rounded-[8px] focus:outline-none focus:border-[#0A0A0A] focus:ring-[3px] focus:ring-opacity-15 focus:ring-[#F59E0B] resize-none"
+            onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
+            style={{
+              width: '100%',
+              minHeight: '120px',
+              padding: '14px 16px',
+              fontSize: '1rem',
+              background: '#fff',
+              border: '1.5px solid #E5E7EB',
+              borderRadius: '8px',
+              outline: 'none',
+              resize: 'none',
+              fontFamily: 'inherit',
+              transition: 'border-color 0.2s, box-shadow 0.2s',
+            }}
+            onFocus={(e) => Object.assign(e.target.style, INPUT_FOCUS_STYLE)}
+            onBlur={(e) => { e.target.style.borderColor = '#E5E7EB'; e.target.style.boxShadow = 'none'; }}
           />
         );
-      default: return null;
+      default:
+        return null;
     }
   };
 
-  const currentQ = questions[currentQIdx];
+  const questions = [
+    "What's your name?",
+    "What's your phone number?",
+    "What's your gender?",
+    "Which faculty are you in?",
+    "What level are you?",
+    "Add a profile photo (optional)",
+    "Tell us about yourself (optional)",
+  ];
+  const subtitles = [
+    "Confirm the name you signed up with.",
+    null, null, null, null, null, null,
+  ];
 
   return (
-    <div className={`w-full flex flex-col ${isAnimating ? 'animate-typeform-exit' : 'animate-typeform-enter'}`}>
-      <div className="text-[#6B7280] text-sm font-bold mb-4">
-        {String(currentQIdx + 1).padStart(2, '0')} <ArrowRight className="inline w-4 h-4 ml-1 mb-[2px]" />
-      </div>
-      
-      <h2 className="text-[1.75rem] font-[700] text-[#0A0A0A] mb-2 leading-tight">
-        {currentQ.title}
-      </h2>
-      
-      {currentQ.subtitle && (
-        <p className="text-[#6B7280] text-base mb-6">{currentQ.subtitle}</p>
+    <QuestionSlide key={slideKey} direction={direction}>
+      <QNum n={currentQIdx + 1} />
+      <QTitle subtitle={subtitles[currentQIdx]}>{questions[currentQIdx]}</QTitle>
+
+      {error && (
+        <p style={{ color: '#EF4444', fontSize: '0.875rem', marginBottom: '12px' }}>{error}</p>
       )}
-      
-      {!currentQ.subtitle && <div className="mb-6" />}
 
-      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+      <div style={{ width: '100%', marginBottom: '28px' }}>{renderInput()}</div>
 
-      <div className="w-full mb-8">
-        {renderInput(currentQ)}
-      </div>
-
-      <div className="flex flex-col gap-4">
-        {/* Buttons layout: skip if optional, else just OK */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={goNextQ}
+      {/* Buttons */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        {/* Hide OK for gender (Q2) and level (Q4) — they auto-advance on selection */}
+        {currentQIdx !== 2 && currentQIdx !== 4 && (
+          <OKButton
+            onClick={() => advance()}
             disabled={loading}
-            className={`flex items-center justify-center gap-2 h-[44px] rounded-lg font-bold transition-all duration-200 ${
-              currentQIdx === totalQuestions - 1 
-                ? 'w-[140px] bg-[#F59E0B] text-[#0A0A0A] hover:bg-[#d47600]' 
-                : 'w-[120px] bg-[#0A0A0A] text-white hover:bg-[#F59E0B] hover:text-[#0A0A0A]'
-            } disabled:opacity-50`}
-          >
-            {loading ? '...' : currentQIdx === totalQuestions - 1 ? 'Continue' : 'OK'} 
-            {!loading && <ArrowRight className="w-4 h-4" />}
-          </button>
-        </div>
+            isLast={isLastQ}
+            loading={loading}
+          />
+        )}
 
-        {/* Action links */}
-        <div className="flex items-center gap-6 mt-2">
-          {currentQIdx > 0 && (
-            <button onClick={goPrevQ} className="text-[#6B7280] text-sm font-medium hover:text-[#0A0A0A] flex items-center gap-1 transition-colors">
-              <ArrowLeft className="w-3.5 h-3.5" /> Back
-            </button>
-          )}
-          {(currentQIdx === 5 || currentQIdx === 6) && (
-            <button onClick={goNextQ} className="text-[#6B7280] text-sm font-medium hover:text-[#0A0A0A] transition-colors">
-              Skip for now
-            </button>
-          )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '4px' }}>
+          {/* Back link */}
+          {(currentQIdx > 0 || onBack) && <BackLink onClick={retreat} />}
+          {/* Skip link for optional questions */}
+          {isOptional && <SkipLink onClick={() => advance(true)} />}
         </div>
       </div>
-    </div>
+    </QuestionSlide>
   );
 }

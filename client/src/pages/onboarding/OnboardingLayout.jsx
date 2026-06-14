@@ -6,15 +6,11 @@ import StepProfile from './StepProfile';
 import StepInterests from './StepInterests';
 import StepServices from './StepServices';
 import StepComplete from './StepComplete';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 export default function OnboardingLayout() {
   const { user, isOnboarded, refreshUser } = useAuth();
-  const [progress, setProgress] = useState(null);
-  const [currentIdx, setCurrentIdx] = useState(0);
   const [displayIdx, setDisplayIdx] = useState(0);
-  const [isExiting, setIsExiting] = useState(false);
-  const [direction, setDirection] = useState('forward');
   const [loading, setLoading] = useState(true);
   const [stepProgress, setStepProgress] = useState({ current: 0, total: 1, title: '' });
 
@@ -37,7 +33,6 @@ export default function OnboardingLayout() {
     const fetchProgress = async () => {
       try {
         const { data } = await api.get('/onboarding/progress');
-        // Resume from where user left off
         const dbStep = data.data.step || 0;
         if (dbStep >= 1) {
           const stepKeys = steps.map((s) => s.key);
@@ -90,8 +85,8 @@ export default function OnboardingLayout() {
   if (user.onboardingComplete) return <Navigate to="/dashboard" replace />;
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[80vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <Loader2 className="w-8 h-8 animate-spin text-[#F59E0B]" />
       </div>
     );
   }
@@ -101,29 +96,43 @@ export default function OnboardingLayout() {
   const progressPercent = Math.round((stepProgress.current / Math.max(stepProgress.total, 1)) * 100);
 
   return (
-    <div className="min-h-screen h-screen flex overflow-hidden font-['Plus_Jakarta_Sans'] text-[#0A0A0A] bg-white">
-      {/* Mobile Thin Progress Bar */}
+    <div
+      className="min-h-screen h-screen flex overflow-hidden"
+      style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", color: '#0A0A0A', background: '#FFFFFF' }}
+    >
+      {/* Mobile: Thin amber progress bar at top */}
       {!isLast && (
         <div className="absolute top-0 left-0 right-0 h-1 bg-[#E5E7EB] md:hidden z-50">
-          <div 
-            className="h-full bg-[#F59E0B] transition-all duration-300"
+          <div
+            className="h-full bg-[#F59E0B] transition-all duration-500"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
       )}
 
-      {/* Left Panel (80%) */}
-      <div className="flex-1 flex flex-col relative h-full overflow-y-auto">
-        {/* Logo */}
+      {/* LEFT PANEL — 80% */}
+      <div
+        className={`flex flex-col relative overflow-y-auto ${isLast ? 'w-full' : 'flex-1'}`}
+        style={{ background: '#FFFFFF' }}
+      >
+        {/* Logo — top left */}
         <div className="absolute top-6 left-6 z-10">
-          <Link to="/" className="text-xl font-bold tracking-tight text-[#0A0A0A]">
-            Campus<span className="text-[#F59E0B]">Connect</span>
+          <Link
+            to="/"
+            style={{ fontSize: '1.125rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#0A0A0A', textDecoration: 'none' }}
+          >
+            Campus<span style={{ color: '#F59E0B' }}>Connect</span>
           </Link>
         </div>
 
-        {/* Content Area */}
-        <div className="flex-1 flex flex-col items-center justify-center w-full min-h-full">
-          <div className="w-full max-w-[560px] px-6 py-20 flex flex-col items-center justify-center relative">
+        {/* Content — centred */}
+        <div
+          className={`flex-1 flex items-center justify-center w-full min-h-full ${isLast ? 'pt-20' : 'pt-16'}`}
+        >
+          <div
+            className="w-full px-6 py-12"
+            style={{ maxWidth: isLast ? '640px' : '560px' }}
+          >
             <StepComponent
               onNext={goNext}
               onBack={displayIdx > 0 ? goBack : null}
@@ -135,31 +144,74 @@ export default function OnboardingLayout() {
         </div>
       </div>
 
-      {/* Right Panel (20%) - Vertical Progress */}
+      {/* RIGHT PANEL — 20%, hidden on mobile & on last step */}
       {!isLast && (
-        <div className="hidden md:flex w-[20%] min-w-[240px] max-w-[320px] bg-[#FAFAFA] border-l border-[#E5E7EB] flex-col justify-between p-8">
+        <div
+          className="hidden md:flex flex-col justify-between p-8 border-l border-[#E5E7EB]"
+          style={{
+            width: '20%',
+            minWidth: '200px',
+            maxWidth: '280px',
+            background: '#FAFAFA',
+          }}
+        >
+          {/* Step name */}
           <div>
-            <h3 className="text-sm font-bold text-[#6B7280] mb-8">{stepProgress.title || steps[displayIdx].title}</h3>
-            <div className="flex flex-col gap-4">
+            <p
+              style={{
+                fontSize: '0.6875rem',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: '#6B7280',
+                marginBottom: '28px',
+              }}
+            >
+              {stepProgress.title || steps[displayIdx].title}
+            </p>
+
+            {/* Vertical dots */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {Array.from({ length: stepProgress.total }).map((_, idx) => {
                 const isAnswered = idx < stepProgress.current;
                 const isCurrent = idx === stepProgress.current;
                 return (
-                  <div key={idx} className="flex items-center gap-3">
-                    <div 
-                      className={`w-2.5 h-2.5 rounded-full transition-colors duration-300 ${
-                        isAnswered ? 'bg-[#F59E0B]' : isCurrent ? 'bg-[#0A0A0A]' : 'bg-[#E5E7EB]'
-                      }`}
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div
+                      style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        background: isAnswered ? '#F59E0B' : isCurrent ? '#0A0A0A' : '#E5E7EB',
+                        transition: 'background 0.3s ease',
+                        flexShrink: 0,
+                      }}
+                    />
+                    <div
+                      style={{
+                        height: '2px',
+                        flex: 1,
+                        borderRadius: '2px',
+                        background: isAnswered ? '#F59E0B' : '#E5E7EB',
+                        transition: 'background 0.3s ease',
+                      }}
                     />
                   </div>
                 );
               })}
             </div>
           </div>
-          
-          <div className="text-sm font-bold text-[#F59E0B]">
-            {progressPercent}% completed
-          </div>
+
+          {/* Percent at bottom */}
+          <p
+            style={{
+              fontSize: '0.8125rem',
+              fontWeight: 700,
+              color: '#F59E0B',
+            }}
+          >
+            {progressPercent}% complete
+          </p>
         </div>
       )}
     </div>

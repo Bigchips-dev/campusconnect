@@ -4,11 +4,14 @@ import { CATEGORIES } from '../../data/categories';
 import { getCategoryIcon } from '../../lib/categoryIcons';
 import { ArrowRight, ArrowLeft, Check } from 'lucide-react';
 
-export default function StepInterests({ progress, onNext, setStepProgress }) {
-  const [selected, setSelected] = useState(progress?.interests || []);
+function ArrowRightIcon() {
+  return <ArrowRight size={16} />;
+}
+
+export default function StepInterests({ onNext, onBack, setStepProgress }) {
+  const [selected, setSelected] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     if (setStepProgress) {
@@ -33,48 +36,124 @@ export default function StepInterests({ progress, onNext, setStepProgress }) {
       await api.put('/onboarding/interests', { interests: selected });
       onNext();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save');
+      setError(err.response?.data?.message || 'Failed to save. Please try again.');
       setLoading(false);
     }
   };
 
   return (
-    <div className={`w-full flex flex-col ${isAnimating ? 'animate-typeform-exit' : 'animate-typeform-enter'}`}>
-      <div className="text-[#6B7280] text-sm font-bold mb-4">
-        01 <ArrowRight className="inline w-4 h-4 ml-1 mb-[2px]" />
+    <div className="w-full flex flex-col animate-typeform-enter">
+      {/* Question number */}
+      <div
+        style={{
+          fontSize: '0.8125rem',
+          fontWeight: 700,
+          color: '#6B7280',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px',
+        }}
+      >
+        01 <ArrowRight size={14} style={{ display: 'inline' }} />
       </div>
-      
-      <h2 className="text-[1.75rem] font-[700] text-[#0A0A0A] mb-2 leading-tight">
+
+      {/* Title */}
+      <h2
+        style={{
+          fontSize: '1.75rem',
+          fontWeight: 700,
+          color: '#0A0A0A',
+          lineHeight: 1.25,
+          marginBottom: '8px',
+        }}
+      >
         What kind of services are you looking for?
       </h2>
-      
-      <p className="text-[#6B7280] text-base mb-6">Select all that apply — minimum 1</p>
+      <p style={{ fontSize: '1rem', color: '#6B7280', marginBottom: '28px' }}>
+        Select all that apply — minimum 1
+      </p>
 
-      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+      {error && (
+        <p style={{ color: '#EF4444', fontSize: '0.875rem', marginBottom: '12px' }}>{error}</p>
+      )}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+      {/* Category grid */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '12px',
+          marginBottom: '32px',
+        }}
+      >
         {CATEGORIES.map((cat) => {
           const isActive = selected.includes(cat.id);
           const Icon = getCategoryIcon(cat.icon);
-
           return (
             <button
               key={cat.id}
               type="button"
               onClick={() => toggle(cat.id)}
-              className={`relative flex flex-col items-center justify-center gap-3 p-4 h-[120px] rounded-xl text-center transition-all duration-150 cursor-pointer hover:-translate-y-1 hover:shadow-md ${
-                isActive
-                  ? 'bg-white border-2 border-[#F59E0B]'
-                  : 'bg-white border border-[#E5E7EB] hover:border-[#0A0A0A]'
-              }`}
+              style={{
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+                padding: '16px 8px',
+                height: '110px',
+                borderRadius: '12px',
+                border: isActive ? '2px solid #F59E0B' : '1.5px solid #E5E7EB',
+                background: '#fff',
+                cursor: 'pointer',
+                textAlign: 'center',
+                transition: 'all 0.15s',
+                transform: 'translateY(0)',
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.borderColor = '#0A0A0A';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.borderColor = '#E5E7EB';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }
+              }}
             >
               {isActive && (
-                <div className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center bg-[#F59E0B]">
-                  <Check className="w-3 h-3 text-white" />
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    background: '#F59E0B',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Check size={11} color="#fff" strokeWidth={3} />
                 </div>
               )}
-              <Icon className="w-6 h-6 text-[#0A0A0A]" style={{ color: cat.color }} />
-              <span className="text-sm font-bold text-[#0A0A0A]">
+              <Icon size={22} style={{ color: cat.color }} />
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: '#0A0A0A',
+                  lineHeight: 1.3,
+                }}
+              >
                 {cat.name}
               </span>
             </button>
@@ -82,18 +161,58 @@ export default function StepInterests({ progress, onNext, setStepProgress }) {
         })}
       </div>
 
-      <div className="flex flex-col gap-4">
+      {/* Continue button — appears once at least 1 selected */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {selected.length > 0 && (
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="w-[140px] h-[44px] flex items-center justify-center gap-2 rounded-lg font-bold transition-all duration-200 bg-[#F59E0B] text-[#0A0A0A] hover:bg-[#d47600] disabled:opacity-50"
-            >
-              {loading ? '...' : 'Continue'} 
-              {!loading && <ArrowRight className="w-4 h-4" />}
-            </button>
-          </div>
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              height: '44px',
+              width: '140px',
+              borderRadius: '8px',
+              fontWeight: 700,
+              fontSize: '0.9375rem',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              background: '#F59E0B',
+              color: '#0A0A0A',
+              opacity: loading ? 0.5 : 1,
+              transition: 'background 0.2s, opacity 0.2s',
+            }}
+            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.background = '#d97706'; }}
+            onMouseLeave={(e) => { if (!loading) e.currentTarget.style.background = '#F59E0B'; }}
+          >
+            {loading ? '…' : 'Continue'} {!loading && <ArrowRight size={16} />}
+          </button>
+        )}
+
+        {/* Back */}
+        {onBack && (
+          <button
+            onClick={onBack}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              color: '#6B7280',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              marginTop: '4px',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#0A0A0A')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#6B7280')}
+          >
+            <ArrowLeft size={14} /> Back
+          </button>
         )}
       </div>
     </div>

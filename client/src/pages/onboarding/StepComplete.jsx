@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
-import Button from '../../components/ui/Button';
 import { useAuth } from '../../hooks/useAuth';
-import { CATEGORIES } from '../../data/categories';
-import { PartyPopper, Search, LayoutDashboard, ArrowRight, CheckCircle2, Sparkles, Check } from 'lucide-react';
+import { CheckCircle2, Check, ArrowRight } from 'lucide-react';
 
 export default function StepComplete({ user, refreshUser, setStepProgress }) {
   const navigate = useNavigate();
@@ -33,82 +31,180 @@ export default function StepComplete({ user, refreshUser, setStepProgress }) {
   };
 
   const checklist = [
-    { text: 'Profile information completed', icon: CheckCircle2 },
-    ...(isSeeker ? [{ text: 'Service interests selected', icon: CheckCircle2 }] : []),
-    ...(isProvider ? [{ text: 'Service skills configured', icon: CheckCircle2 }] : [])
+    { text: 'Profile information completed' },
+    ...(isSeeker ? [{ text: 'Service interests selected' }] : []),
+    ...(isProvider ? [{ text: 'Service skills configured' }] : []),
   ];
 
   return (
-  <div className="flex flex-col items-center text-center 
-    pt-10 pb-16 w-full max-w-[640px] mx-auto px-6">
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        textAlign: 'center',
+        width: '100%',
+        maxWidth: '560px',
+        margin: '0 auto',
+        padding: '40px 24px 64px',
+      }}
+    >
+      {/* Amber check circle */}
+      <div
+        className="big-bounce-scale"
+        style={{
+          width: '80px',
+          height: '80px',
+          borderRadius: '50%',
+          background: '#F59E0B',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '28px',
+          boxShadow: '0 8px 32px rgba(245,158,11,0.35)',
+        }}
+      >
+        <Check size={40} color="#fff" strokeWidth={3} />
+      </div>
 
-    {/* Amber Circle Icon */}
-    <div className="w-20 h-20 mb-6 rounded-full 
-      bg-[#F59E0B] flex items-center justify-center 
-      big-bounce-scale">
-      <Check className="w-10 h-10 text-white" 
-        strokeWidth={3} />
-    </div>
+      {/* Heading */}
+      <h2
+        style={{
+          fontSize: '2rem',
+          fontWeight: 800,
+          color: '#0A0A0A',
+          lineHeight: 1.2,
+          marginBottom: '10px',
+          letterSpacing: '-0.02em',
+        }}
+      >
+        You're all set, {user?.firstName || ''}!
+      </h2>
 
-    {/* Heading */}
-    <h2 className="text-5xl font-extrabold 
-      text-[#0A0A0A] mb-2">
-      You're all set, {user?.firstName || ''}!
-    </h2>
+      {/* Subheading */}
+      <p
+        style={{
+          fontSize: '1rem',
+          color: '#6B7280',
+          marginBottom: '36px',
+          lineHeight: 1.5,
+        }}
+      >
+        Your profile is ready. Here's what you can do next:
+      </p>
 
-    {/* Subheading */}
-    <p className="text-base text-[#6B7280] mb-8">
-      Your profile is ready. Here's what you 
-      can do next:
-    </p>
-
-    {/* Checklist */}
-    <div className="w-full max-w-[400px] 
-      flex flex-col gap-3 mb-10">
-      {checklist.map((item, index) => {
-        const Icon = item.icon;
-        return (
-          <div key={index} 
-            className="flex items-center gap-4 
-            bg-white p-4 rounded-xl 
-            border border-[#E5E7EB]">
-            <Icon className="w-5 h-5 
-              text-[#F59E0B] flex-shrink-0" />
-            <span className="font-semibold 
-              text-sm text-[#0A0A0A]">
+      {/* Checklist */}
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '400px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          marginBottom: '40px',
+        }}
+      >
+        {checklist.map((item, index) => (
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px',
+              background: '#fff',
+              padding: '14px 18px',
+              borderRadius: '12px',
+              border: '1.5px solid #E5E7EB',
+              textAlign: 'left',
+            }}
+          >
+            <CheckCircle2
+              size={20}
+              color="#F59E0B"
+              style={{ flexShrink: 0 }}
+            />
+            <span
+              style={{ fontWeight: 600, fontSize: '0.9375rem', color: '#0A0A0A' }}
+            >
               {item.text}
             </span>
           </div>
-        );
-      })}
-    </div>
+        ))}
+      </div>
 
-    {/* Buttons */}
-    <div className="flex flex-col items-center 
-      gap-4 w-full">
-      <button
-        onClick={() => handleFinish('/dashboard')}
-        disabled={loading}
-        className="w-[280px] py-4 px-6 
-          bg-[#0A0A0A] text-white font-semibold 
-          text-base rounded-lg hover:bg-[#F59E0B] 
-          hover:text-[#0A0A0A] transition-all 
-          duration-200 disabled:opacity-50">
-        Go to Dashboard
-      </button>
-      <button
-        onClick={() => handleFinish('/services')}
-        disabled={loading}
-        className="w-[280px] py-4 px-6 
-          bg-white text-[#0A0A0A] font-semibold 
-          text-base rounded-lg border-2 
-          border-[#0A0A0A] hover:bg-[#FAFAFA] 
-          transition-all duration-200 
-          disabled:opacity-50">
-        Explore Services
-      </button>
-    </div>
+      {/* CTA Buttons */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '16px',
+          width: '100%',
+        }}
+      >
+        <button
+          onClick={() => handleFinish('/dashboard')}
+          disabled={loading}
+          style={{
+            width: '280px',
+            height: '52px',
+            background: '#0A0A0A',
+            color: '#fff',
+            fontWeight: 700,
+            fontSize: '1rem',
+            borderRadius: '10px',
+            border: 'none',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.5 : 1,
+            transition: 'background 0.2s, color 0.2s',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+          }}
+          onMouseEnter={(e) => {
+            if (!loading) {
+              e.currentTarget.style.background = '#F59E0B';
+              e.currentTarget.style.color = '#0A0A0A';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!loading) {
+              e.currentTarget.style.background = '#0A0A0A';
+              e.currentTarget.style.color = '#fff';
+            }
+          }}
+        >
+          Go to Dashboard
+          <ArrowRight size={16} />
+        </button>
 
-  </div>
-);
+        <button
+          onClick={() => handleFinish('/services')}
+          disabled={loading}
+          style={{
+            width: '280px',
+            height: '52px',
+            background: '#fff',
+            color: '#0A0A0A',
+            fontWeight: 700,
+            fontSize: '1rem',
+            borderRadius: '10px',
+            border: '2px solid #0A0A0A',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.5 : 1,
+            transition: 'background 0.2s',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+          }}
+          onMouseEnter={(e) => { if (!loading) e.currentTarget.style.background = '#FAFAFA'; }}
+          onMouseLeave={(e) => { if (!loading) e.currentTarget.style.background = '#fff'; }}
+        >
+          Explore Services
+        </button>
+      </div>
+    </div>
+  );
 }

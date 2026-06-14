@@ -138,7 +138,7 @@ export default function OnboardingLayout() {
       <div className="flex-1 flex flex-col items-center w-full">
         <div className="w-full max-w-[640px] px-4 pt-16 pb-24 flex flex-col">
           {/* Progress indicators */}
-          <div className="flex items-center justify-between relative mb-12">
+          <div className="flex items-center justify-between relative pb-[80px]">
             <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-[#E5E7EB] z-0 overflow-hidden">
               {/* Animated connecting line fill */}
               <div
@@ -178,6 +178,7 @@ export default function OnboardingLayout() {
                 : direction === 'forward' ? 'step-enter-forward' : 'step-enter-backward'
             }`}
             key={displayIdx}
+            style={{ marginTop: '48px' }}
           >
             <StepComponent
               progress={progress}

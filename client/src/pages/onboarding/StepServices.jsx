@@ -172,7 +172,7 @@ export default function StepServices({ progress, onNext, onBack }) {
       {error && <p className="text-sm text-red-500 animate-step-field">{error}</p>}
 
       {/* Accordion sections for each selected category */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-[16px] mb-[32px]">
         {selectedCats.map((catId, index) => {
           const cat = CATEGORIES.find((c) => c.id === catId);
           if (!cat) return null;
@@ -269,12 +269,12 @@ export default function StepServices({ progress, onNext, onBack }) {
       </div>
 
       {/* Portfolio URLs */}
-      <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 space-y-4 animate-step-field" style={{ animationDelay: `${200 + selectedCats.length * 50}ms` }}>
-        <div>
+      <div className="bg-white rounded-2xl border border-[#E5E7EB] p-[16px] mb-[24px] animate-step-field" style={{ animationDelay: `${200 + selectedCats.length * 50}ms` }}>
+        <div className="mb-[16px]">
           <h3 className="font-bold text-[#0A0A0A]">Portfolio Images (optional)</h3>
           <p className="text-sm text-[#6B7280] mt-1">Add up to 3 image URLs showcasing your work</p>
         </div>
-        <div className="space-y-3">
+        <div>
           {portfolioUrls.map((url, i) => (
             <input
               key={i}
@@ -282,7 +282,7 @@ export default function StepServices({ progress, onNext, onBack }) {
               placeholder={`Image URL ${i + 1}`}
               value={url}
               onChange={(e) => { const next = [...portfolioUrls]; next[i] = e.target.value; setPortfolioUrls(next); }}
-              className="w-full px-4 py-3 bg-white border border-[#E5E7EB] rounded-lg text-sm transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]"
+              className="w-full px-4 py-3 mb-[12px] bg-white border border-[#E5E7EB] rounded-lg text-sm transition-all duration-150 focus:outline-none focus:border-[#0A0A0A] focus:ring-1 focus:ring-[#F59E0B]"
             />
           ))}
         </div>

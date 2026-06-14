@@ -33,53 +33,76 @@ export default function StepComplete({ user, refreshUser }) {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] text-center py-[40px] px-[20px] w-full">
-      {/* Icon */}
-      <div className="w-[80px] h-[80px] mb-[32px] rounded-full bg-[#F59E0B] flex items-center justify-center big-bounce-scale">
-        <Check className="w-[40px] h-[40px] text-white" strokeWidth={3} />
-      </div>
+  <div className="flex flex-col items-center text-center 
+    pt-10 pb-16 w-full max-w-[640px] mx-auto px-6">
 
-      {/* Header */}
-      <div className="w-full">
-        <h2 className="text-[3rem] font-[800] text-[#0A0A0A] mb-[8px] animate-step-heading" style={{ animationDelay: '400ms' }}>
-          You're all set, {user?.firstName || 'Big'}!
-        </h2>
-        <p className="text-[1rem] text-[#6B7280] mb-[32px] animate-step-subheading" style={{ animationDelay: '500ms' }}>
-          Your profile is ready. Here's what you can do next:
-        </p>
-      </div>
-
-      {/* Checklist */}
-      <div className="w-full max-w-[400px] mb-[40px] flex flex-col gap-[12px] text-left">
-        {checklist.map((item, index) => {
-          const Icon = item.icon;
-          const delay = 600 + index * 100;
-          return (
-            <div key={index} className="flex items-center gap-4 bg-white p-4 rounded-xl border border-[#E5E7EB] animate-slide-in-left" style={{ animationDelay: `${delay}ms` }}>
-              <div className="w-10 h-10 rounded-full bg-[#FAFAFA] flex items-center justify-center flex-shrink-0">
-                <Icon className="w-5 h-5 text-[#F59E0B]" />
-              </div>
-              <span className="font-bold text-sm text-[#0A0A0A]">{item.text}</span>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex flex-col items-center gap-[16px] w-full animate-step-btn" style={{ animationDelay: '900ms' }}>
-        <button
-          onClick={() => handleFinish('/dashboard')}
-          className="w-[280px] py-[14px] px-[24px] bg-[#0A0A0A] text-white border-none rounded-[8px] text-[1rem] font-[600] cursor-pointer transition-all duration-200 hover:bg-[#F59E0B] hover:text-[#0A0A0A] active:scale-[0.98]"
-        >
-          Go to Dashboard
-        </button>
-        <button
-          onClick={() => handleFinish('/services')}
-          className="w-[280px] py-[14px] px-[24px] bg-white text-[#0A0A0A] border-2 border-[#0A0A0A] rounded-[8px] text-[1rem] font-[600] cursor-pointer transition-all duration-200 hover:bg-[#FAFAFA] active:scale-[0.98]"
-        >
-          Explore Services
-        </button>
-      </div>
+    {/* Amber Circle Icon */}
+    <div className="w-20 h-20 mb-6 rounded-full 
+      bg-[#F59E0B] flex items-center justify-center 
+      big-bounce-scale">
+      <Check className="w-10 h-10 text-white" 
+        strokeWidth={3} />
     </div>
-  );
+
+    {/* Heading */}
+    <h2 className="text-5xl font-extrabold 
+      text-[#0A0A0A] mb-2">
+      You're all set, {user?.firstName || ''}!
+    </h2>
+
+    {/* Subheading */}
+    <p className="text-base text-[#6B7280] mb-8">
+      Your profile is ready. Here's what you 
+      can do next:
+    </p>
+
+    {/* Checklist */}
+    <div className="w-full max-w-[400px] 
+      flex flex-col gap-3 mb-10">
+      {checklist.map((item, index) => {
+        const Icon = item.icon;
+        return (
+          <div key={index} 
+            className="flex items-center gap-4 
+            bg-white p-4 rounded-xl 
+            border border-[#E5E7EB]">
+            <Icon className="w-5 h-5 
+              text-[#F59E0B] flex-shrink-0" />
+            <span className="font-semibold 
+              text-sm text-[#0A0A0A]">
+              {item.text}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+
+    {/* Buttons */}
+    <div className="flex flex-col items-center 
+      gap-4 w-full">
+      <button
+        onClick={() => handleFinish('/dashboard')}
+        disabled={loading}
+        className="w-[280px] py-4 px-6 
+          bg-[#0A0A0A] text-white font-semibold 
+          text-base rounded-lg hover:bg-[#F59E0B] 
+          hover:text-[#0A0A0A] transition-all 
+          duration-200 disabled:opacity-50">
+        Go to Dashboard
+      </button>
+      <button
+        onClick={() => handleFinish('/services')}
+        disabled={loading}
+        className="w-[280px] py-4 px-6 
+          bg-white text-[#0A0A0A] font-semibold 
+          text-base rounded-lg border-2 
+          border-[#0A0A0A] hover:bg-[#FAFAFA] 
+          transition-all duration-200 
+          disabled:opacity-50">
+        Explore Services
+      </button>
+    </div>
+
+  </div>
+);
 }

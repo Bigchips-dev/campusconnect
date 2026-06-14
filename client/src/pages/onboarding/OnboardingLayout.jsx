@@ -170,33 +170,32 @@ export default function OnboardingLayout() {
               {stepProgress.title || steps[displayIdx].title}
             </p>
 
-            {/* Vertical dots */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            {/* Vertical dots — fills remaining space evenly */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-evenly',
+                alignItems: 'center',
+                flex: 1,
+                height: '100%',
+              }}
+            >
               {Array.from({ length: stepProgress.total }).map((_, idx) => {
                 const isAnswered = idx < stepProgress.current;
                 const isCurrent = idx === stepProgress.current;
                 return (
-                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div
-                      style={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        background: isAnswered ? '#F59E0B' : isCurrent ? '#0A0A0A' : '#E5E7EB',
-                        transition: 'background 0.3s ease',
-                        flexShrink: 0,
-                      }}
-                    />
-                    <div
-                      style={{
-                        height: '2px',
-                        flex: 1,
-                        borderRadius: '2px',
-                        background: isAnswered ? '#F59E0B' : '#E5E7EB',
-                        transition: 'background 0.3s ease',
-                      }}
-                    />
-                  </div>
+                  <div
+                    key={idx}
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: isAnswered ? '#F59E0B' : isCurrent ? '#0A0A0A' : '#E5E7EB',
+                      transform: isCurrent ? 'scale(1.4)' : 'scale(1)',
+                      transition: 'all 300ms ease',
+                    }}
+                  />
                 );
               })}
             </div>

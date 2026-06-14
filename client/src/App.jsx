@@ -11,8 +11,13 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import VerifyEmail from './pages/VerifyEmail';
-import BrowseServices from './pages/BrowseServices';
 import ServiceDetail from './pages/ServiceDetail';
+
+// Browse flow — multi-page services experience
+import CategorySelection from './pages/browse/CategorySelection';
+import SubcategorySelection from './pages/browse/SubcategorySelection';
+import ProvidersList from './pages/browse/ProvidersList';
+import ProviderProfile from './pages/browse/ProviderProfile';
 
 // Protected pages
 import Dashboard from './pages/Dashboard';
@@ -39,7 +44,14 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/services" element={<BrowseServices />} />
+
+          {/* Browse / Explore Services — multi-page flow */}
+          <Route path="/services" element={<CategorySelection />} />
+          <Route path="/services/category/:categoryId" element={<SubcategorySelection />} />
+          <Route path="/services/category/:categoryId/subcategory/:subcategoryId" element={<ProvidersList />} />
+          <Route path="/provider/:providerId" element={<ProviderProfile />} />
+
+          {/* Listing detail (existing) */}
           <Route path="/listing/:id" element={<ServiceDetail />} />
 
           {/* Onboarding — requires auth but NOT onboarding completion */}

@@ -6,7 +6,7 @@ import StepProfile from './StepProfile';
 import StepInterests from './StepInterests';
 import StepServices from './StepServices';
 import StepComplete from './StepComplete';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Check } from 'lucide-react';
 
 export default function OnboardingLayout() {
   const { user, isOnboarded, refreshUser } = useAuth();
@@ -25,7 +25,7 @@ export default function OnboardingLayout() {
     { key: 'profile', title: 'About You', component: StepProfile },
     ...(isSeeker ? [{ key: 'interests', title: 'Your Interests', component: StepInterests }] : []),
     ...(isProvider ? [{ key: 'services', title: 'Your Services', component: StepServices }] : []),
-    { key: 'complete', title: 'All Set!', component: StepComplete },
+    { key: 'complete', title: 'All Set', component: StepComplete },
   ];
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -93,11 +93,45 @@ export default function OnboardingLayout() {
 
   const StepComponent = steps[displayIdx].component;
   const isLast = steps[displayIdx].key === 'complete';
-  const progressPercent = Math.round((stepProgress.current / Math.max(stepProgress.total, 1)) * 100);
+
+  // Compute Sidebar Steps
+  const getSidebarSteps = () => {
+    if (isSeeker && isProvider) {
+      return ['About You', 'Your Interests', 'Your Services', 'Service Details', 'All Set'];
+    } else if (isProvider) {
+      return ['About You', 'Your Services', 'Service Details', 'All Set'];
+    } else {
+      return ['About You', 'Your Interests', 'All Set'];
+    }
+  };
+
+  const getActiveTitle = () => {
+    const key = steps[displayIdx]?.key;
+    if (key === 'profile') return 'About You';
+    if (key === 'interests') return 'Your Interests';
+    if (key === 'services') return stepProgress.current === 0 ? 'Your Services' : 'Service Details';
+    if (key === 'complete') return 'All Set';
+    return '';
+  };
+
+  const sidebarSteps = getSidebarSteps();
+  const activeTitle = getActiveTitle();
+  const activeIndex = sidebarSteps.indexOf(activeTitle);
+
+  // Calculate overall percentage
+  let overallPercent = 0;
+  if (isLast) {
+    overallPercent = 100;
+  } else if (activeIndex >= 0) {
+    const stepWeight = 100 / sidebarSteps.length;
+    const basePercent = activeIndex * stepWeight;
+    const stepFraction = stepProgress.current / Math.max(stepProgress.total, 1);
+    overallPercent = Math.round(basePercent + (stepFraction * stepWeight));
+  }
 
   return (
     <div
-      className="min-h-screen h-screen flex overflow-hidden"
+      className="min-h-screen flex overflow-hidden w-full"
       style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", color: '#0A0A0A', background: '#FFFFFF' }}
     >
       {/* Mobile: Thin amber progress bar at top */}
@@ -105,15 +139,15 @@ export default function OnboardingLayout() {
         <div className="absolute top-0 left-0 right-0 h-1 bg-[#E5E7EB] md:hidden z-50">
           <div
             className="h-full bg-[#F59E0B] transition-all duration-500"
-            style={{ width: `${progressPercent}%` }}
+            style={{ width: `${overallPercent}%` }}
           />
         </div>
       )}
 
-      {/* LEFT PANEL — 80% */}
+      {/* LEFT PANEL — Question Content */}
       <div
-        className={`flex flex-col relative overflow-y-auto ${isLast ? 'w-full' : 'flex-1'}`}
-        style={{ background: '#FFFFFF' }}
+        className="flex flex-col relative overflow-y-auto w-full md:w-[calc(100%-220px)]"
+        style={{ background: '#FFFFFF', minHeight: '100vh' }}
       >
         {/* Logo — top left */}
         <div className="absolute top-6 left-6 z-10">
@@ -144,75 +178,92 @@ export default function OnboardingLayout() {
         </div>
       </div>
 
-      {/* RIGHT PANEL — 20%, hidden on mobile & on last step */}
-      {!isLast && (
-        <div
-          className="hidden md:flex flex-col justify-between p-8 border-l border-[#E5E7EB]"
+      {/* RIGHT PANEL — Fixed Step Sidebar */}
+      <div
+        className="hidden md:flex flex-col border-l border-[#E5E7EB]"
+        style={{
+          width: '220px',
+          position: 'fixed',
+          right: 0,
+          top: 0,
+          height: '100vh',
+          background: '#F9F9F9',
+          padding: '40px 20px',
+          zIndex: 10,
+        }}
+      >
+        <p
           style={{
-            width: '20%',
-            minWidth: '200px',
-            maxWidth: '280px',
-            background: '#FAFAFA',
+            fontSize: '10px',
+            fontWeight: 600,
+            color: '#9CA3AF',
+            letterSpacing: '0.1em',
+            marginBottom: '20px',
           }}
         >
-          {/* Step name */}
-          <div>
-            <p
-              style={{
-                fontSize: '0.6875rem',
-                fontWeight: 700,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: '#6B7280',
-                marginBottom: '28px',
-              }}
-            >
-              {stepProgress.title || steps[displayIdx].title}
-            </p>
+          STEPS
+        </p>
 
-            {/* Vertical dots — fills remaining space evenly */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {sidebarSteps.map((step, index) => {
+            const isCompleted = index < activeIndex || isLast;
+            const isActive = index === activeIndex && !isLast;
+
+            let bg = 'transparent';
+            let color = '#9CA3AF'; // UPCOMING
+            let weight = 400;
+
+            if (isCompleted) {
+              color = '#6B7280';
+            } else if (isActive) {
+              bg = '#0A0A0A';
+              color = '#FFFFFF';
+              weight = 600;
+            }
+
+            return (
+              <div
+                key={step}
+                style={{
+                  padding: '10px 14px',
+                  borderRadius: '6px',
+                  marginBottom: '6px',
+                  fontSize: '13px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  background: bg,
+                  color: color,
+                  fontWeight: weight,
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                {isCompleted && (
+                  <Check size={14} style={{ color: '#F59E0B', flexShrink: 0 }} />
+                )}
+                <span>{step}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* BOTTOM: Progress Bar */}
+        <div style={{ marginTop: 'auto' }}>
+          <p style={{ fontSize: '11px', fontWeight: 700, color: '#F59E0B' }}>
+            {overallPercent}% complete
+          </p>
+          <div style={{ width: '100%', height: '4px', background: '#E5E7EB', borderRadius: '999px', marginTop: '6px', overflow: 'hidden' }}>
             <div
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-evenly',
-                alignItems: 'center',
-                flex: 1,
                 height: '100%',
+                background: '#F59E0B',
+                width: `${overallPercent}%`,
+                transition: 'width 0.5s ease',
               }}
-            >
-              {Array.from({ length: stepProgress.total }).map((_, idx) => {
-                const isAnswered = idx < stepProgress.current;
-                const isCurrent = idx === stepProgress.current;
-                return (
-                  <div
-                    key={idx}
-                    style={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      background: isAnswered ? '#F59E0B' : isCurrent ? '#0A0A0A' : '#E5E7EB',
-                      transform: isCurrent ? 'scale(1.4)' : 'scale(1)',
-                      transition: 'all 300ms ease',
-                    }}
-                  />
-                );
-              })}
-            </div>
+            />
           </div>
-
-          {/* Percent at bottom */}
-          <p
-            style={{
-              fontSize: '0.8125rem',
-              fontWeight: 700,
-              color: '#F59E0B',
-            }}
-          >
-            {progressPercent}% complete
-          </p>
         </div>
-      )}
+      </div>
     </div>
   );
 }

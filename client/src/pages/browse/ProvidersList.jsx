@@ -72,12 +72,12 @@ export default function ProvidersList() {
   const sorted = useMemo(() => sortProviders(allProviders, sort), [allProviders, sort]);
 
   return (
-    <div style={{ background: '#fff', minHeight: '100vh', fontFamily: "'Plus Jakarta Sans',system-ui,sans-serif" }}>
+    <div className="page-wrapper" style={{ background: '#fff', fontFamily: "'Plus Jakarta Sans',system-ui,sans-serif" }}>
       <style>{GLOBAL_STYLE}</style>
-      <div style={{ maxWidth: 1120, margin: '0 auto', padding: '40px 24px 80px' }}>
+      <div className="page-container">
 
         {/* Breadcrumb trail */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 36, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 24, padding: '8px 0', flexWrap: 'wrap' }}>
           <BreadBtn onClick={() => navigate('/services')}>All Categories</BreadBtn>
           <ChevronRight size={14} style={{ color: '#D1D5DB' }} />
           <BreadBtn onClick={() => navigate(`/services/category/${categoryId}`)}>

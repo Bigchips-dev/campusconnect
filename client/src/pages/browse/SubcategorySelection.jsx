@@ -61,17 +61,17 @@ export default function SubcategorySelection() {
   }
 
   return (
-    <div style={{ background: '#fff', minHeight: '100vh', fontFamily: "'Plus Jakarta Sans',system-ui,sans-serif" }}>
+    <div className="page-wrapper" style={{ background: '#fff', fontFamily: "'Plus Jakarta Sans',system-ui,sans-serif" }}>
       <style>{GLOBAL_STYLE}</style>
-      <div style={{ maxWidth: 1120, margin: '0 auto', padding: '40px 24px 80px' }}>
+      <div className="page-container">
 
         {/* Breadcrumb */}
         <button
           onClick={() => navigate('/services')}
           style={{
-            display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 36,
+            display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 24, padding: '8px 0',
             fontSize: '0.875rem', fontWeight: 600, color: '#6B7280',
-            background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit',
+            background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
           }}
           onMouseEnter={(e) => (e.currentTarget.style.color = '#0A0A0A')}
           onMouseLeave={(e) => (e.currentTarget.style.color = '#6B7280')}

@@ -3,16 +3,16 @@ import Avatar from './Avatar';
 import { CATEGORIES } from '../../data/categories';
 
 const categoryColors = {
-  TUTORING: 'bg-primary-100 text-primary-700 dark:bg-primary-950/40 dark:text-primary-300',
-  DESIGN: 'bg-secondary-100 text-secondary-700 dark:bg-secondary-950/40 dark:text-secondary-300',
+  TUTORING: 'bg-[#FAFAFA] text-[#0A0A0A]',
+  DESIGN: 'bg-[#FAFAFA] text-[#0A0A0A]',
   PHOTOGRAPHY: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
   MOVING: 'bg-accent-100 text-accent-700 dark:bg-accent-950/40 dark:text-accent-300',
   CLEANING: 'bg-success-100 text-success-700 dark:bg-success-700/20 dark:text-success-300',
-  TECH_SUPPORT: 'bg-navy-100 text-navy-700 dark:bg-navy-800 dark:text-navy-200',
+  TECH_SUPPORT: 'bg-[#FAFAFA] text-[#6B7280]',
   WRITING: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
   FITNESS: 'bg-error-100 text-error-700 dark:bg-error-700/20 dark:text-error-300',
   MUSIC: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
-  OTHER: 'bg-navy-100 text-navy-700 dark:bg-navy-800 dark:text-navy-200',
+  OTHER: 'bg-[#FAFAFA] text-[#6B7280]',
 };
 
 const categoryLabels = {
@@ -84,12 +84,12 @@ export default function ListingCard({
             style={{
               background: catInfo
                 ? `linear-gradient(135deg, ${catInfo.color}33, ${catInfo.color}66)`
-                : 'linear-gradient(135deg, var(--color-primary-500)33, var(--color-secondary-500)33)',
+                : 'linear-gradient(135deg, #F59E0B33, #0A0A0A33)',
             }}
           >
             <span
               className="text-6xl font-black opacity-30 select-none"
-              style={{ color: catInfo ? catInfo.color : 'var(--color-primary-500)' }}
+              style={{ color: catInfo ? catInfo.color : '#F59E0B' }}
             >
               {catLabel[0]}
             </span>
@@ -123,7 +123,7 @@ export default function ListingCard({
           )}
 
           <h3
-            className="font-bold text-base sm:text-lg mb-1 line-clamp-1 group-hover:text-primary-500 transition-colors"
+            className="font-bold text-base sm:text-lg mb-1 line-clamp-1 group-hover:text-[#F59E0B] transition-colors"
             style={{ color: 'var(--text-heading)' }}
           >
             {title}
@@ -166,7 +166,7 @@ export default function ListingCard({
                       window.location.href = `/messages?providerId=${providerId}`;
                     }
                   }}
-                  className="p-1 rounded-lg hover:bg-[var(--bg-muted)] text-primary-500 cursor-pointer flex-shrink-0 transition-colors inline-flex items-center"
+                  className="p-1 rounded-lg hover:bg-[var(--bg-muted)] text-[#F59E0B] cursor-pointer flex-shrink-0 transition-colors inline-flex items-center"
                   title="Message Provider"
                 >
                   <MessageSquare className="w-3.5 h-3.5" />
@@ -205,7 +205,7 @@ export default function ListingCard({
               <div
                 className="w-full text-center py-2 px-4 rounded-xl font-bold text-sm transition-colors"
                 style={{
-                  backgroundColor: 'var(--color-primary-500)',
+                  backgroundColor: '#0A0A0A',
                   color: 'white',
                 }}
               >

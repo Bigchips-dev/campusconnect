@@ -89,28 +89,25 @@ export default function ProviderProfile() {
   }
 
   return (
-    <div style={{ background: '#fff', minHeight: '100vh', fontFamily: "'Plus Jakarta Sans',system-ui,sans-serif" }}>
+    <div className="page-wrapper" style={{ background: '#fff', fontFamily: "'Plus Jakarta Sans',system-ui,sans-serif" }}>
       <style>{GLOBAL_STYLE}</style>
 
       {/* ── Back button ── */}
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '24px 24px 0' }}>
+      <div className="page-container">
         <button
           onClick={() => navigate(-1)}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.875rem', fontWeight: 600, color: '#6B7280', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.875rem', fontWeight: 600, color: '#6B7280', background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0', marginBottom: 24, fontFamily: 'inherit' }}
           onMouseEnter={(e) => (e.currentTarget.style.color = '#0A0A0A')}
           onMouseLeave={(e) => (e.currentTarget.style.color = '#6B7280')}
         >
-          <ChevronLeft size={17} /> Back
+          <ChevronLeft size={16} /> Back
         </button>
       </div>
 
-      {/* ── Amber banner ── */}
-      <div style={{ width: '100%', height: 100, background: '#F59E0B', position: 'relative', marginTop: 16 }} />
-
-      {/* ── Profile header ── */}
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 24px' }}>
-        {/* Avatar overlapping banner */}
-        <div style={{ marginTop: -52, marginBottom: 16 }}>
+      {/* ── Top Cover & Avatar ── */}
+      <div className="page-container" style={{ position: 'relative', marginBottom: 40 }}>
+        <div style={{ width: '100%', height: 100, background: '#F59E0B', borderRadius: 12 }} />
+        <div style={{ marginTop: -52, marginLeft: 24 }}>
           {provider.avatarUrl ? (
             <img
               src={provider.avatarUrl}

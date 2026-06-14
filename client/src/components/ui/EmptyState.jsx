@@ -26,10 +26,10 @@ export default function EmptyState({
           className="w-24 h-24 rounded-full flex items-center justify-center"
           style={{ backgroundColor: 'var(--bg-surface-raised)' }}
         >
-          <Icon className="w-10 h-10 text-primary-400" />
+          <Icon className="w-10 h-10 text-[#F59E0B]" />
         </div>
         {/* Decorative ring */}
-        <div className="absolute inset-0 w-24 h-24 rounded-full border-2 border-dashed border-primary-200 dark:border-primary-800 animate-[spin_20s_linear_infinite]" />
+        <div className="absolute inset-0 w-24 h-24 rounded-full border-2 border-dashed border-[#E5E7EB] animate-[spin_20s_linear_infinite]" />
       </div>
 
       <h3

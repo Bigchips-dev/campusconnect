@@ -2,52 +2,52 @@ import { CheckCircle2, Shield, Clock, XCircle, Star } from 'lucide-react';
 
 const presets = {
   verified: {
-    classes: 'bg-primary-100 text-primary-700 dark:bg-primary-950/40 dark:text-primary-300',
+    classes: 'bg-[#FAFAFA] text-[#0A0A0A] border border-[#E5E7EB]',
     icon: CheckCircle2,
     label: 'Verified',
   },
   provider: {
-    classes: 'bg-secondary-100 text-secondary-700 dark:bg-secondary-950/40 dark:text-secondary-300',
+    classes: 'bg-[#FAFAFA] text-[#0A0A0A] border border-[#E5E7EB]',
     icon: Shield,
     label: 'Provider',
   },
   seeker: {
-    classes: 'bg-accent-100 text-accent-700 dark:bg-accent-950/40 dark:text-accent-300',
+    classes: 'bg-accent-100 text-accent-700',
     icon: Star,
     label: 'Seeker',
   },
   pending: {
-    classes: 'bg-warning-100 text-warning-700 dark:bg-warning-700/20 dark:text-warning-300',
+    classes: 'bg-warning-100 text-warning-700',
     icon: Clock,
     label: 'Pending',
   },
   active: {
-    classes: 'bg-success-100 text-success-700 dark:bg-success-700/20 dark:text-success-300',
+    classes: 'bg-success-100 text-success-700',
     icon: CheckCircle2,
     label: 'Active',
   },
   completed: {
-    classes: 'bg-success-100 text-success-700 dark:bg-success-700/20 dark:text-success-300',
+    classes: 'bg-success-100 text-success-700',
     icon: CheckCircle2,
     label: 'Completed',
   },
   cancelled: {
-    classes: 'bg-error-100 text-error-700 dark:bg-error-700/20 dark:text-error-300',
+    classes: 'bg-error-100 text-error-700',
     icon: XCircle,
     label: 'Cancelled',
   },
   rejected: {
-    classes: 'bg-error-100 text-error-700 dark:bg-error-700/20 dark:text-error-300',
+    classes: 'bg-error-100 text-error-700',
     icon: XCircle,
     label: 'Rejected',
   },
   accepted: {
-    classes: 'bg-primary-100 text-primary-700 dark:bg-primary-950/40 dark:text-primary-300',
+    classes: 'bg-[#0A0A0A] text-white',
     icon: CheckCircle2,
     label: 'Accepted',
   },
   default: {
-    classes: 'bg-navy-100 text-navy-700 dark:bg-navy-800 dark:text-navy-200',
+    classes: 'bg-[#F3F4F6] text-[#6B7280]',
     icon: null,
     label: '',
   },

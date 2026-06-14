@@ -367,12 +367,12 @@ export default function ServiceDetail() {
   const otherListings = providerDetails?.services?.filter((s) => s.id !== service.id) || [];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+    <div className="page-wrapper page-container space-y-10">
       
       {/* Back Button */}
       <Link
         to="/services"
-        className="inline-flex items-center gap-2 text-sm font-bold text-primary-500 hover:text-primary-600 transition-colors"
+        className="inline-flex items-center gap-2 text-sm font-bold text-[#6B7280] hover:text-[#0A0A0A] transition-colors mb-6 py-2"
       >
         <ArrowLeft className="w-5 h-5" /> Back to listings browser
       </Link>

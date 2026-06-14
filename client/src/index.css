@@ -5,32 +5,59 @@
    CampusConnect Design System — Tailwind v4
    ====================================================== */
 
-@theme {
-  /* ---- Primary: Vivid Purple ---- */
-  --color-primary-50: #f5f0ff;
-  --color-primary-100: #ede5ff;
-  --color-primary-200: #ddd0ff;
-  --color-primary-300: #c4abff;
-  --color-primary-400: #a67dff;
-  --color-primary-500: #7C3AED;
-  --color-primary-600: #6d28d9;
-  --color-primary-700: #5b21b6;
-  --color-primary-800: #4c1d95;
-  --color-primary-900: #3b1578;
-  --color-primary-950: #1e0a3e;
+/* ======================================================
+   Global Layout Helpers
+   ====================================================== */
 
-  /* ---- Secondary: Hot Coral ---- */
-  --color-secondary-50: #fff1f3;
-  --color-secondary-100: #ffe0e5;
-  --color-secondary-200: #ffc7d1;
-  --color-secondary-300: #ffa0b3;
-  --color-secondary-400: #ff6d8a;
-  --color-secondary-500: #FF4D6D;
-  --color-secondary-600: #ed2454;
-  --color-secondary-700: #c81843;
-  --color-secondary-800: #a7183f;
-  --color-secondary-900: #8e193c;
-  --color-secondary-950: #50071c;
+.page-wrapper {
+  padding-top: 80px;
+  padding-bottom: 80px;
+  min-height: 100vh;
+}
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+@media (max-width: 768px) {
+  .page-wrapper {
+    padding-top: 60px;
+  }
+  .page-container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@theme {
+  /* ---- Primary: Black ---- */
+  --color-primary-50: #FAFAFA;
+  --color-primary-100: #F3F4F6;
+  --color-primary-200: #E5E7EB;
+  --color-primary-300: #D1D5DB;
+  --color-primary-400: #6B7280;
+  --color-primary-500: #0A0A0A;
+  --color-primary-600: #0A0A0A;
+  --color-primary-700: #0A0A0A;
+  --color-primary-800: #000000;
+  --color-primary-900: #000000;
+  --color-primary-950: #000000;
+
+  /* ---- Secondary: Grey ---- */
+  --color-secondary-50: #FAFAFA;
+  --color-secondary-100: #F3F4F6;
+  --color-secondary-200: #E5E7EB;
+  --color-secondary-300: #D1D5DB;
+  --color-secondary-400: #9CA3AF;
+  --color-secondary-500: #6B7280;
+  --color-secondary-600: #4B5563;
+  --color-secondary-700: #374151;
+  --color-secondary-800: #1F2937;
+  --color-secondary-900: #111827;
+  --color-secondary-950: #030712;
 
   /* ---- Accent: Bright Amber ---- */
   --color-accent-50: #fffbeb;
@@ -46,17 +73,17 @@
   --color-accent-950: #441a00;
 
   /* ---- Navy: Dark Background shades ---- */
-  --color-navy-50: #f0eeff;
-  --color-navy-100: #e0dcff;
-  --color-navy-200: #c5bfee;
-  --color-navy-300: #9d93d4;
-  --color-navy-400: #7568b5;
-  --color-navy-500: #5a4d96;
-  --color-navy-600: #463b78;
-  --color-navy-700: #342b5e;
-  --color-navy-800: #231c47;
-  --color-navy-900: #150f30;
-  --color-navy-950: #0D0A1E;
+  --color-navy-50: #FAFAFA;
+  --color-navy-100: #F3F4F6;
+  --color-navy-200: #E5E7EB;
+  --color-navy-300: #D1D5DB;
+  --color-navy-400: #9CA3AF;
+  --color-navy-500: #6B7280;
+  --color-navy-600: #4B5563;
+  --color-navy-700: #374151;
+  --color-navy-800: #1F2937;
+  --color-navy-900: #111827;
+  --color-navy-950: #0A0A0A;
 
   /* ---- Success ---- */
   --color-success-50: #f0fdf4;
@@ -92,9 +119,9 @@
   --font-family-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 
   /* ---- Shadows ---- */
-  --shadow-glow-primary: 0 0 24px rgba(124, 58, 237, 0.35);
-  --shadow-glow-secondary: 0 0 24px rgba(255, 77, 109, 0.3);
-  --shadow-glow-accent: 0 0 24px rgba(255, 184, 0, 0.3);
+  --shadow-glow-primary: 0 0 24px rgba(10, 10, 10, 0.15);
+  --shadow-glow-secondary: 0 0 24px rgba(107, 114, 128, 0.15);
+  --shadow-glow-accent: 0 0 24px rgba(245, 158, 11, 0.3);
 }
 
 /* ======================================================
@@ -103,45 +130,45 @@
 
 :root,
 [data-theme="light"] {
-  --bg-base: #F9F7FF;
+  --bg-base: #ffffff;
   --bg-surface: #FFFFFF;
-  --bg-surface-raised: #F3F0FF;
+  --bg-surface-raised: #FAFAFA;
   --bg-surface-overlay: rgba(255, 255, 255, 0.92);
-  --bg-muted: #F1EEF9;
+  --bg-muted: #F3F4F6;
 
-  --text-heading: #0D0A1E;
-  --text-body: #1E1B2E;
+  --text-heading: #0A0A0A;
+  --text-body: #0A0A0A;
   --text-muted: #6B7280;
   --text-faint: #9CA3AF;
-  --text-inverse: #F9F7FF;
+  --text-inverse: #ffffff;
 
-  --border-default: #E5E1F0;
-  --border-strong: #D1CCE3;
-  --border-focus: #7C3AED;
+  --border-default: #E5E7EB;
+  --border-strong: #D1D5DB;
+  --border-focus: #F59E0B;
 
-  --ring-focus: rgba(124, 58, 237, 0.25);
+  --ring-focus: rgba(245, 158, 11, 0.15);
 
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --bg-base: #0D0A1E;
-  --bg-surface: #181430;
-  --bg-surface-raised: #211C40;
-  --bg-surface-overlay: rgba(13, 10, 30, 0.92);
-  --bg-muted: #1E1838;
+  --bg-base: #0A0A0A;
+  --bg-surface: #111111;
+  --bg-surface-raised: #1A1A1A;
+  --bg-surface-overlay: rgba(10, 10, 10, 0.92);
+  --bg-muted: #1F1F1F;
 
-  --text-heading: #F9F7FF;
-  --text-body: #D8D4E8;
-  --text-muted: #8B85A3;
-  --text-faint: #5E5878;
-  --text-inverse: #0D0A1E;
+  --text-heading: #FAFAFA;
+  --text-body: #E5E7EB;
+  --text-muted: #9CA3AF;
+  --text-faint: #6B7280;
+  --text-inverse: #0A0A0A;
 
-  --border-default: #2A2548;
-  --border-strong: #3D3660;
-  --border-focus: #A67DFF;
+  --border-default: #2A2A2A;
+  --border-strong: #3A3A3A;
+  --border-focus: #F59E0B;
 
-  --ring-focus: rgba(166, 125, 255, 0.3);
+  --ring-focus: rgba(245, 158, 11, 0.25);
 
   color-scheme: dark;
 }
@@ -280,11 +307,11 @@ body {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-default);
   border-radius: 1rem;
-  box-shadow: 0 4px 24px rgba(124, 58, 237, 0.06);
+  box-shadow: 0 4px 24px rgba(10, 10, 10, 0.06);
 }
 
 [data-theme="dark"] .surface-glow {
-  box-shadow: 0 4px 24px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 4px 24px rgba(245, 158, 11, 0.08);
 }
 
 /* Gradient border accent — top */
@@ -300,7 +327,7 @@ body {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #7C3AED, #FF4D6D);
+  background: linear-gradient(90deg, #F59E0B, #D97706);
   border-radius: 1rem 1rem 0 0;
 }
 
@@ -316,7 +343,7 @@ body {
   inset: 0;
   padding: 1.5px;
   border-radius: inherit;
-  background: linear-gradient(135deg, #7C3AED, #FF4D6D, #FFB800);
+  background: linear-gradient(135deg, #F59E0B, #D97706, #0A0A0A);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
@@ -329,14 +356,14 @@ body {
    ====================================================== */
 
 .gradient-text {
-  background: linear-gradient(135deg, #7C3AED, #FF4D6D);
+  background: linear-gradient(135deg, #0A0A0A, #F59E0B);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-warm {
-  background: linear-gradient(135deg, #FF4D6D, #FFB800);
+  background: linear-gradient(135deg, #F59E0B, #D97706);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -420,11 +447,11 @@ body {
 
   0%,
   100% {
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
   }
 
   50% {
-    box-shadow: 0 0 36px rgba(124, 58, 237, 0.45);
+    box-shadow: 0 0 36px rgba(245, 158, 11, 0.3);
   }
 }
 

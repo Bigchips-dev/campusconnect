@@ -4,7 +4,7 @@ import api from '../lib/api';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Card from '../components/ui/Card';
-import { PenLine, DollarSign, Tag, Image } from 'lucide-react';
+import { PenLine, DollarSign, Image } from 'lucide-react';
 
 import { CATEGORIES } from '../data/categories';
 
@@ -35,62 +35,109 @@ export default function CreateService() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-3xl font-bold mb-2">Post a Service</h1>
-      <p className="text-surface-200/60 mb-8">Share your skills with fellow students</p>
+    <div className="page-wrapper page-container" style={{ maxWidth: 800 }}>
+      <h1 style={{ fontSize: '2rem', fontWeight: 800, color: '#0A0A0A', marginBottom: 8 }}>Post a Service</h1>
+      <p style={{ fontSize: '1rem', color: '#6B7280', marginBottom: 32 }}>Share your skills with fellow students</p>
 
-      <Card hover={false} className="p-8">
+      <Card hover={false} style={{ padding: 32 }}>
         {error && (
-          <div className="mb-6 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">{error}</div>
+          <div style={{ marginBottom: 24, padding: 12, borderRadius: 12, background: '#FEF2F2', border: '1px solid #FECACA', color: '#EF4444', fontSize: '0.875rem' }}>
+            {error}
+          </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <Input label="Title" icon={PenLine} placeholder="e.g. Python Tutoring Sessions" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <Input 
+            label="Title" 
+            icon={PenLine} 
+            placeholder="e.g. Python Tutoring Sessions" 
+            value={form.title} 
+            onChange={(e) => setForm({ ...form, title: e.target.value })} 
+            required 
+          />
 
-          <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-surface-200">Description</label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#0A0A0A' }}>Description</label>
             <textarea
               rows={5}
               placeholder="Describe your service in detail..."
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-surface-50 placeholder-surface-200/40 focus:outline-none focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/20 transition-all resize-none"
+              className="focus-ring"
+              style={{
+                width: '100%', padding: '10px 16px', borderRadius: 12, background: '#fff',
+                border: '1.5px solid #E5E7EB', color: '#0A0A0A', fontSize: '0.9375rem',
+                outline: 'none', resize: 'none', transition: 'all 0.2s',
+                fontFamily: 'inherit',
+              }}
+              onFocus={(e) => { e.target.style.borderColor = '#0A0A0A'; e.target.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.15)'; }}
+              onBlur={(e) => { e.target.style.borderColor = '#E5E7EB'; e.target.style.boxShadow = 'none'; }}
               required
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-surface-200">Category</label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#0A0A0A' }}>Category</label>
             <select
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-surface-50 focus:outline-none focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/20 transition-all"
+              className="focus-ring"
+              style={{
+                width: '100%', padding: '10px 16px', borderRadius: 12, background: '#fff',
+                border: '1.5px solid #E5E7EB', color: '#0A0A0A', fontSize: '0.9375rem',
+                outline: 'none', transition: 'all 0.2s', fontFamily: 'inherit',
+              }}
+              onFocus={(e) => { e.target.style.borderColor = '#0A0A0A'; e.target.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.15)'; }}
+              onBlur={(e) => { e.target.style.borderColor = '#E5E7EB'; e.target.style.boxShadow = 'none'; }}
             >
               {CATEGORIES.map((c) => (
-                <option key={c.id} value={c.id} className="bg-surface-900">{c.name}</option>
+                <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <Input label="Price ($)" type="number" icon={DollarSign} placeholder="25" min="0" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required />
-            <div className="space-y-1.5">
-              <label className="block text-sm font-medium text-surface-200">Pricing Type</label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <Input 
+              label="Price ($)" 
+              type="number" 
+              icon={DollarSign} 
+              placeholder="25" 
+              min="0" 
+              step="0.01" 
+              value={form.price} 
+              onChange={(e) => setForm({ ...form, price: e.target.value })} 
+              required 
+            />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#0A0A0A' }}>Pricing Type</label>
               <select
                 value={form.pricingType}
                 onChange={(e) => setForm({ ...form, pricingType: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-surface-50 focus:outline-none focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                className="focus-ring"
+                style={{
+                  width: '100%', padding: '10px 16px', borderRadius: 12, background: '#fff',
+                  border: '1.5px solid #E5E7EB', color: '#0A0A0A', fontSize: '0.9375rem',
+                  outline: 'none', transition: 'all 0.2s', fontFamily: 'inherit',
+                }}
+                onFocus={(e) => { e.target.style.borderColor = '#0A0A0A'; e.target.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.15)'; }}
+                onBlur={(e) => { e.target.style.borderColor = '#E5E7EB'; e.target.style.boxShadow = 'none'; }}
               >
-                <option value="FIXED" className="bg-surface-900">Fixed Price</option>
-                <option value="HOURLY" className="bg-surface-900">Per Hour</option>
-                <option value="FREE" className="bg-surface-900">Free</option>
+                <option value="FIXED">Fixed Price</option>
+                <option value="HOURLY">Per Hour</option>
+                <option value="FREE">Free</option>
               </select>
             </div>
           </div>
 
-          <Input label="Image URL (optional)" icon={Image} placeholder="https://..." value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} />
+          <Input 
+            label="Image URL (optional)" 
+            icon={Image} 
+            placeholder="https://..." 
+            value={form.imageUrl} 
+            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} 
+          />
 
-          <Button type="submit" className="w-full" size="lg" loading={loading}>
+          <Button type="submit" style={{ width: '100%', marginTop: 12 }} size="lg" loading={loading}>
             Publish Service
           </Button>
         </form>

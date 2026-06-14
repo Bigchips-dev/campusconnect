@@ -1,13 +1,22 @@
 import { Link } from 'react-router-dom';
 import { Sparkles, Github, Twitter, Mail } from 'lucide-react';
 
+const T = {
+  bg: '#0A0A0A',
+  text: '#ffffff',
+  muted: '#6B7280',
+  accent: '#F59E0B',
+  divider: '#1F1F1F',
+  font: "'Plus Jakarta Sans', system-ui, sans-serif",
+};
+
 const footerLinks = [
   {
     title: 'Product',
     links: [
       { label: 'Browse Services', to: '/services' },
       { label: 'Post a Service', to: '/services/create' },
-      { label: 'How It Works', to: '/#how-it-works' },
+      { label: 'How It Works', onClick: () => {} },
     ],
   },
   {
@@ -21,52 +30,50 @@ const footerLinks = [
   {
     title: 'Support',
     links: [
-      { label: 'Help Center', to: '#' },
-      { label: 'Privacy Policy', to: '#' },
-      { label: 'Terms of Service', to: '#' },
+      { label: 'Get Help', onClick: () => {} },
+      { label: 'Privacy Policy', onClick: () => {} },
+      { label: 'Terms of Service', onClick: () => {} },
     ],
   },
 ];
 
 export default function Footer() {
   return (
-    <footer
-      className="border-t mt-auto text-slate-300"
-      style={{
-        backgroundColor: '#0D0A1E',
-        borderColor: '#1E1838',
-      }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-md shadow-primary-500/20">
-                <Sparkles className="w-4 h-4 text-white" />
+    <footer style={{ background: T.bg, fontFamily: T.font, marginTop: 'auto' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '60px 80px 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 40 }}>
+          {/* Brand column */}
+          <div>
+            <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginBottom: 16 }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: 8, background: T.accent,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Sparkles size={16} style={{ color: T.bg }} />
               </div>
-              <span className="text-lg font-bold text-white">
-                Campus<span className="text-primary-400">Connect</span>
+              <span style={{ fontSize: '1.125rem', fontWeight: 800, color: T.text }}>
+                Campus<span style={{ color: T.accent }}>Connect</span>
               </span>
             </Link>
-            <p className="text-sm mb-5 text-slate-400">
+            <p style={{ fontSize: '0.875rem', color: T.muted, lineHeight: 1.6, marginBottom: 20, maxWidth: 240 }}>
               The marketplace where university students connect to find and offer services.
             </p>
-            <div className="flex items-center gap-3">
-              {[
-                { icon: Twitter, href: '#' },
-                { icon: Github, href: '#' },
-                { icon: Mail, href: '#' },
-              ].map(({ icon: Icon, href }, i) => (
-                <a
+            <div style={{ display: 'flex', gap: 8 }}>
+              {[Twitter, Github, Mail].map((Icon, i) => (
+                <button
                   key={i}
-                  href={href}
-                  className="p-2 rounded-lg transition-colors hover:bg-navy-900 text-slate-400 hover:text-white"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  onClick={() => {}}
+                  style={{
+                    width: 36, height: 36, borderRadius: 8, border: 'none',
+                    background: 'transparent', cursor: 'pointer', display: 'flex',
+                    alignItems: 'center', justifyContent: 'center', color: T.muted,
+                    transition: 'color .2s', fontFamily: T.font,
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = T.accent; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = T.muted; }}
                 >
-                  <Icon className="w-4 h-4" />
-                </a>
+                  <Icon size={16} />
+                </button>
               ))}
             </div>
           </div>
@@ -74,18 +81,41 @@ export default function Footer() {
           {/* Link columns */}
           {footerLinks.map((col) => (
             <div key={col.title}>
-              <h4 className="text-sm font-bold mb-3 text-white">
+              <h4 style={{
+                color: T.text, fontWeight: 600, fontSize: '0.875rem',
+                textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16,
+              }}>
                 {col.title}
               </h4>
-              <ul className="space-y-2">
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {col.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      to={link.to}
-                      className="text-sm transition-colors text-slate-400 hover:text-secondary-400"
-                    >
-                      {link.label}
-                    </Link>
+                  <li key={link.label} style={{ marginBottom: 12 }}>
+                    {link.to ? (
+                      <Link
+                        to={link.to}
+                        style={{
+                          color: T.muted, fontSize: '0.875rem', textDecoration: 'none',
+                          transition: 'color .2s', display: 'block',
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = T.accent; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = T.muted; }}
+                      >
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={link.onClick}
+                        style={{
+                          color: T.muted, fontSize: '0.875rem', background: 'none',
+                          border: 'none', padding: 0, cursor: 'pointer', fontFamily: T.font,
+                          transition: 'color .2s', display: 'block', textAlign: 'left',
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = T.accent; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = T.muted; }}
+                      >
+                        {link.label}
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -94,18 +124,30 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div
-          className="mt-10 pt-6 border-t flex flex-col sm:flex-row items-center justify-between gap-4"
-          style={{ borderColor: '#1E1838' }}
-        >
-          <p className="text-xs text-slate-500">
+        <div style={{
+          marginTop: 40, paddingTop: 24, borderTop: `1px solid ${T.divider}`,
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12,
+        }}>
+          <p style={{ fontSize: '0.8125rem', color: T.muted, margin: 0 }}>
             © {new Date().getFullYear()} CampusConnect. Built for students, by students.
           </p>
-          <p className="text-xs text-slate-500">
-            Made with 💜 for campus communities
+          <p style={{ fontSize: '0.8125rem', color: T.muted, margin: 0 }}>
+            Made with ♥ for campus communities
           </p>
         </div>
       </div>
+
+      {/* Responsive styles */}
+      <style>{`
+        @media (max-width: 768px) {
+          footer > div > div:first-child {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          footer > div {
+            padding: 40px 20px 32px !important;
+          }
+        }
+      `}</style>
     </footer>
   );
 }

@@ -25,14 +25,14 @@ export default function ServiceCard({ service }) {
         {service.imageUrl ? (
           <img src={service.imageUrl} alt={service.title} className="w-full h-40 object-cover rounded-xl mb-4" />
         ) : (
-          <div className="w-full h-40 rounded-xl mb-4 bg-gradient-to-br from-primary-500/20 to-accent-400/20 flex items-center justify-center">
+          <div className="w-full h-40 rounded-xl mb-4 bg-gradient-to-br from-[#F59E0B]/20 to-[#0A0A0A]/10 flex items-center justify-center">
             <span className="text-4xl opacity-50">{categoryLabels[service.category]?.[0] || '?'}</span>
           </div>
         )}
         <Badge variant={categoryColors[service.category] || 'default'}>
           {categoryLabels[service.category] || service.category}
         </Badge>
-        <h3 className="text-lg font-semibold mt-3 mb-1 group-hover:text-primary-300 transition-colors line-clamp-1">
+        <h3 className="text-lg font-semibold mt-3 mb-1 group-hover:text-[#F59E0B] transition-colors line-clamp-1">
           {service.title}
         </h3>
         <p className="text-sm text-surface-200/60 mb-4 line-clamp-2">{service.description}</p>

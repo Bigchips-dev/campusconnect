@@ -26,9 +26,9 @@ export default function CategorySelection() {
     : CATEGORIES;
 
   return (
-    <div style={{ background: '#fff', minHeight: '100vh', fontFamily: "'Plus Jakarta Sans',system-ui,sans-serif" }}>
+    <div className="page-wrapper" style={{ background: '#fff', fontFamily: "'Plus Jakarta Sans',system-ui,sans-serif" }}>
       <style>{GLOBAL_STYLE}</style>
-      <div style={{ maxWidth: 1120, margin: '0 auto', padding: '48px 24px 80px' }}>
+      <div className="page-container">
 
         {/* Heading */}
         <div style={{ marginBottom: 36 }}>

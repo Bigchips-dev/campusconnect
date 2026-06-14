@@ -15,7 +15,7 @@ export default function ServiceCategoryCard({
   name,
   description,
   count,
-  color = '#7C3AED',
+  color = '#F59E0B',
   isVirtual = false,
   onClick,
   className = '',
@@ -46,13 +46,13 @@ export default function ServiceCategoryCard({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <h3
-            className="font-bold text-sm sm:text-base truncate group-hover:text-primary-500 transition-colors"
+            className="font-bold text-sm sm:text-base truncate group-hover:text-[#F59E0B] transition-colors"
             style={{ color: 'var(--text-heading)' }}
           >
             {name}
           </h3>
           {isVirtual && (
-            <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase rounded-md bg-primary-100 dark:bg-primary-950/30 text-primary-600 dark:text-primary-300 leading-none">
+            <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase rounded-md bg-[#FEF3C7] text-[#92400E] leading-none">
               Virtual
             </span>
           )}

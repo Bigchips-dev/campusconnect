@@ -7,13 +7,13 @@ const sizes = {
 };
 
 const palette = [
-  'bg-primary-500',
-  'bg-secondary-500',
-  'bg-accent-400',
-  'bg-success-500',
-  'bg-warning-500',
-  'bg-primary-700',
-  'bg-secondary-700',
+  'bg-[#0A0A0A]',
+  'bg-[#374151]',
+  'bg-[#1F2937]',
+  'bg-[#111827]',
+  'bg-[#0A0A0A]',
+  'bg-[#1F2937]',
+  'bg-[#374151]',
 ];
 
 function hashStr(str) {

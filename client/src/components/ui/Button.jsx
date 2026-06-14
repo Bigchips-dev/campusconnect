@@ -2,13 +2,13 @@ import { Loader2 } from 'lucide-react';
 
 const variants = {
   primary:
-    'bg-primary-500 text-white hover:bg-primary-600 shadow-md shadow-primary-500/20 hover:shadow-lg hover:shadow-primary-500/30 hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm',
+    'bg-[#0A0A0A] text-white hover:bg-[#F59E0B] hover:text-[#0A0A0A] shadow-md shadow-black/10 hover:shadow-lg hover:shadow-[#F59E0B]/20 hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm',
   secondary:
-    'bg-transparent text-secondary-500 border-2 border-secondary-400 hover:bg-secondary-50 hover:border-secondary-500 hover:-translate-y-0.5 active:translate-y-0 dark:hover:bg-secondary-950/30',
+    'bg-transparent text-[#0A0A0A] border-2 border-[#E5E7EB] hover:bg-[#FAFAFA] hover:border-[#F59E0B] hover:-translate-y-0.5 active:translate-y-0',
   accent:
-    'bg-accent-400 text-navy-950 font-bold hover:bg-accent-300 shadow-md shadow-accent-400/20 hover:shadow-lg hover:shadow-accent-400/30 hover:-translate-y-0.5 active:translate-y-0',
+    'bg-[#F59E0B] text-[#0A0A0A] font-bold hover:bg-[#D97706] shadow-md shadow-[#F59E0B]/20 hover:shadow-lg hover:shadow-[#F59E0B]/30 hover:-translate-y-0.5 active:translate-y-0',
   ghost:
-    'bg-transparent hover:bg-navy-100 dark:hover:bg-navy-800 text-[var(--text-body)]',
+    'bg-transparent hover:bg-[#FAFAFA] text-[#0A0A0A]',
   danger:
     'bg-error-500 text-white hover:bg-error-600 shadow-md shadow-error-500/20 hover:shadow-lg hover:shadow-error-500/30',
 };
@@ -29,12 +29,6 @@ export default function Button({
   type = 'button',
   ...props
 }) {
-  // Handle dark-mode overrides for secondary variant
-  const darkSecondary =
-    variant === 'secondary'
-      ? '[data-theme="dark"] &:hover { background: rgba(255,77,109,0.08); }'
-      : '';
-
   return (
     <button
       type={type}

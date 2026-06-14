@@ -79,13 +79,13 @@ export default function ProviderCard({
       {/* Stats */}
       <div className="flex items-center gap-4 pt-3 border-t border-[var(--border-default)]">
         <div className="flex items-center gap-1.5">
-          <BookOpen className="w-4 h-4 text-primary-400" />
+          <BookOpen className="w-4 h-4 text-[#F59E0B]" />
           <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
             {serviceCount} {serviceCount === 1 ? 'service' : 'services'}
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <Award className="w-4 h-4 text-secondary-400" />
+          <Award className="w-4 h-4 text-[#F59E0B]" />
           <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
             {reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}
           </span>

@@ -35,7 +35,7 @@ export default function App() {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <ToastContainer />
-      <main className="flex-1 pt-16">
+      <main className="flex-1 page-wrapper flex flex-col">
         <Routes>
           {/* Public */}
           <Route path="/" element={<Home />} />

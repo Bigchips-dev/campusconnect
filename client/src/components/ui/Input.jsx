@@ -36,7 +36,7 @@ export default function Input({
             Icon ? 'pl-11' : '',
             error
               ? 'border-error-500 focus:border-error-500 focus:ring-error-500/25'
-              : 'border-[var(--border-default)] focus:border-primary-500 focus:ring-[var(--ring-focus)]',
+              : 'border-[var(--border-default)] focus:border-[#0A0A0A] focus:ring-[rgba(245,158,11,0.15)]',
           ].join(' ')}
           style={{
             backgroundColor: 'var(--bg-surface)',

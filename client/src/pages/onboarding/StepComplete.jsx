@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
 import Button from '../../components/ui/Button';
@@ -6,9 +6,15 @@ import { useAuth } from '../../hooks/useAuth';
 import { CATEGORIES } from '../../data/categories';
 import { PartyPopper, Search, LayoutDashboard, ArrowRight, CheckCircle2, Sparkles, Check } from 'lucide-react';
 
-export default function StepComplete({ user, refreshUser }) {
+export default function StepComplete({ user, refreshUser, setStepProgress }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (setStepProgress) {
+      setStepProgress({ current: 1, total: 1, title: 'All Set!' });
+    }
+  }, [setStepProgress]);
 
   const isSeeker = user?.activeRoles?.includes('SEEKER');
   const isProvider = user?.activeRoles?.includes('PROVIDER');

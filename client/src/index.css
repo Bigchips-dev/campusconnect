@@ -817,3 +817,21 @@ body {
   opacity: 0;
   animation: fadeSlideUp 300ms ease-out forwards;
 }
+
+@keyframes slideUpFadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-30px); }
+}
+
+@keyframes slideUpFadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-typeform-exit {
+  animation: slideUpFadeOut 300ms ease-in forwards;
+}
+
+.animate-typeform-enter {
+  animation: slideUpFadeIn 300ms ease-out forwards;
+}

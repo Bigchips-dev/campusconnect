@@ -110,7 +110,7 @@ function QuestionSlide({ children, direction }) {
 
   useEffect(() => {
     setCls(direction === 'back' ? 'animate-typeform-enter-down' : 'animate-typeform-enter');
-  }, [direction, children]);
+  }, [direction]);
 
   return <div className={`w-full flex flex-col ${cls}`}>{children}</div>;
 }
@@ -279,12 +279,22 @@ export default function StepProfile({ onNext, onBack, user, setStepProgress }) {
   // Handle pill selections
   const handleGenderClick = (value) => {
     setForm((f) => ({ ...f, gender: value }));
-    if (value) setError('');
+    setError('');
+    setTimeout(() => {
+      setDirection('forward');
+      setSlideKey((k) => k + 1);
+      setCurrentQIdx((i) => i + 1);
+    }, 300);
   };
 
   const handleLevelClick = (value) => {
     setForm((f) => ({ ...f, level: value }));
-    if (value) setError('');
+    setError('');
+    setTimeout(() => {
+      setDirection('forward');
+      setSlideKey((k) => k + 1);
+      setCurrentQIdx((i) => i + 1);
+    }, 300);
   };
 
   const renderInput = () => {
